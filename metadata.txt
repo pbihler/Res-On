@@ -1,0 +1,26 @@
+ResOn 0.1 
+
+Interface to access academic examination results online 
+in a privacy-respecting way.
+
+Developed 2007 by Pascal Bihler and Björn Krüger.
+
+
+-------------------------------------
+
+Reson (Fictional element from Discworld)
+
+Roughly translated as thingy, these particles combine to make up thaums. 
+Similarly to real-world quarks, they come in five different flavours: 
+Up, down, sideways, sex appeal and peppermint. They are considered to be 
+the fundamental particles of reality (see Moving Pictures).
+
+(from http://en.wikipedia.org/wiki/Fictional_element)
+
+"It was here that the thaum, hitherto believed to be the smallest possible 
+particle of magic, was succesfully demonstrated to be made up of /resons/ 
+(Lit.: 'Thing-ies') or reality fragments. Currently research indicates 
+that each reson is itself made up of a combination of at least five 
+'flavours', known as 'up', 'down', 'sideways', 'sex appeal' and 
+'peppermint'." - Lords and Ladies
+
