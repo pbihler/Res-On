@@ -14,7 +14,7 @@
      
      protected $page_title = "Res-On";
      // To add something to the menu, use $this->menu = array("caption"=>"link") + $this->menu; 
-     protected $menu = array('Contact' => 'mailto:info@res-on.org');
+     protected $menu = array();
      
      protected $introduction = '';
      
@@ -26,6 +26,10 @@
     		header("Location: $url");
     		exit;
          }
+         
+         if (MainConfig::$contact_url) 
+             $this->menu += array('Contact' => MainConfig::$contact_url);
+             
      }
      
      /*
@@ -116,6 +120,18 @@
          
      }
      
+     protected function writeJavascript($script) {
+         echo  "\n" .'<script type="text/javascript" language="javascript">' . "\n" .
+         		'  <!--' .  "\n" .
+         		$script .  "\n" .
+         		'  // -->' .  "\n" .
+         		'</script>' . "\n";
+     }
+     
+     protected function formatError($message) {
+         return '<div class="error">' . $message . "</div><br />\n";
+     }
+     
      protected function renderNote($text, $title = '', $date = '') {
          ?>
       <div id="note">
@@ -130,6 +146,7 @@
           <?php if ($date) { ?>
              <div id="date"><?php echo $date; ?></div>
           <?php } ?>
+          
         </div>
         <div id="noteBottom">
           &nbsp;
@@ -138,7 +155,7 @@
          <?php
      }
       
-     
+ 
  }
  
 ?>

@@ -66,6 +66,9 @@
           'database' => 'reson',
           'db_prefix' => ''
       );
+      
+      // contact e-mail:
+      public static $contact_url = "mailto:info@res-on.org";
      
      
         

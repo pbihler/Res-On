@@ -148,5 +148,13 @@ div#bottom {
         padding-top:20px;
 }
 
+div#loginform {
+		text-align:center;
+}
 
-
+div.error {
+		color:#7F0000;
+		margin:5px;
+		text-align:center;
+        font-weight: bold;
+}
