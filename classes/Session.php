@@ -2,7 +2,7 @@
 /*
  * Created on 24.03.2007 by bihler
  *
- * This contains page-persitant data (Singleton)
+ * This contains page-persitant data (and is a Singleton)
  * 
  * Licenced under GPL: http://www.gnu.org/licenses/gpl.txt
  *
@@ -41,6 +41,7 @@
      static function createNewSession($password) {
         
         // Delete old Session object from php_session cache
+        // and create new seesion_id to prevent session fixation:
         self::destroySession();
         $session = self::getInstance();
         $auth_ok = Authentication::authenticate($password);
