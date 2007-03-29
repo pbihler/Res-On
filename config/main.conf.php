@@ -70,6 +70,8 @@
       // contact e-mail:
       public static $contact_url = "mailto:info@res-on.org";
      
+      //As long as Res-on doesn't support multi-project, this number needs to be set:
+      public static $default_project_id = 1;
      
         
  }

@@ -16,6 +16,7 @@
      }
      
      function renderNotes() {
+     	 //Maybe something usefull should come here (Login with Reson-Id etc.)
          $this->renderNote('To administer, please go to <a href="admin.php">Administration</a>.','Administration');
          /* $cr = new CryptProxy();
          $pwd_gen = new ConfiguredPasswordGenerator();

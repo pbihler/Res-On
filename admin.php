@@ -8,27 +8,23 @@
  *
  */
  
- require_once('classes/autoload.php');
+require_once('classes/autoload.php');
  
- $msg = null;
+$msg = null;
+
+//check, whether there was some login attempt:
+try { 
+	 if (isset($_POST['pwd']) && $password = $_POST['pwd']) {
+	 	$session = Session::createNewSession($password);
+	 	if (! $session->isLoggedIn())
+	 		$msg = "Password not correct";
+	 }
+} catch (Exception $exception){ // in this case, render exception as error.
+	$msg=$exception;
+}
  
- //Get (or recreate) Session information
- if ($_GET['logout'] == 1) 
- 	Session::destroySession();
- $session = Session::getInstance();
- 
- //check, whether there was some login attempt:
- if ($password = $_POST['pwd']) {
- 	$session = Session::createNewSession($password);
- 	if (! $session->isLoggedIn())
- 		$msg = "Password not correct";
- }
- 
- if ($session->isLoggedIn())
- 	$page = new AdminPage();
- else
- 	$page = new LoginPage($msg);
+$page = AdminPageFactory::factory('AdminMenuPage',$msg);
  	
- $page->render();
+$page->render();
  
 ?>

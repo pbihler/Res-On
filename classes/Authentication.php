@@ -8,8 +8,9 @@
  *
  */
  class Authentication {
-     static function authenticate($password) {
-         return $password == 'bla'; // No real authentication yet
+     static function authenticate($password,$project_id) {
+         $db = Database::getInstance();
+         return $db->checkAuthentication($password,$project_id);
      }
  }
 ?>
