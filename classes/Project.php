@@ -11,9 +11,11 @@
  	private $name = '';
  	private $db = null;
  	
- 	function __construct($id) {
+ 	function __construct($id,$password) {
  		$this->db = Database::getInstance();
- 		$project_info = $this->db->getProjectInfo($id);
+ 		$project_info = $this->db->getProjectInfo($id,$password);
+ 		if (! $project_info)
+ 			throw new PasswordException('Wrong password');
  		$this->id = $project_info['project_id'];
  		$this->name = $project_info['project_name'];
  	}
@@ -32,5 +34,9 @@
  		    $this->name=$name;
  	}
  	
+ }
+ 
+ class PasswordException extends Exception {
+     //
  }
 ?>

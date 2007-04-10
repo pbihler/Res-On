@@ -10,14 +10,13 @@
  
  class Session extends Singleton {
    
-     private $logged_in = false;
      private $project = null;
      
      /**
       * @return bool whether the current user is logged in
       */
      public function isLoggedIn() {
-         return $this->logged_in;
+         return $this->project != null;
      }
      
      /**
@@ -64,12 +63,12 @@
         // and create new session_id to prevent session fixation:
         self::destroySession();
         $session = self::getInstance();
-        
-        $auth_ok = Authentication::authenticate($password,$project_id);
-	 	if ($auth_ok) {
-	 	    $session->project = new Project($project_id);
-	 	    $session->logged_in = true;
-	 	} 
+       
+	 	try {
+	 		$session->project = new Project($project_id,$password);
+	 	} catch (PasswordException $e) {
+	 		$session->project = null;
+	 	}
 	 	return $session;
      }
      

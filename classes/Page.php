@@ -52,6 +52,11 @@
          echo "    </div>\n";
      }
      
+     protected function setTitle($title) {
+     	 $this->page_title = $title . " - Res-On"; 
+         $this->introduction = $title; 
+     }
+     
      protected function renderNotes() {
          /*
           * to render several notes, override this function with something like:
@@ -61,6 +66,7 @@
           * ...
           */
      }
+     
      
      
     /**

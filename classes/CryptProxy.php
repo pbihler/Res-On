@@ -11,8 +11,12 @@
     
     private $crypt_module;
     
-    function __construct() {
-        switch(MainConfig::$crypt_module) {
+    function __construct($module_name = null) {
+    	
+        if (! $module_name)
+        	$module_name = MainConfig::$default_crypt_module;
+        	
+        switch($module_name) {
             case 'none':
 		    $this->crypt_module = new CryptNone();		   
 		    break;

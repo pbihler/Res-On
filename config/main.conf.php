@@ -21,16 +21,25 @@
       * Configure the level of security, how secure data is stored
       * in the database (level of encryption)
       * 
-      * Possible values for $cryptModule are "none", "hash", "gpg"
+      * Possible values for $default_crypt_module are "none", "hash", "gpg"
       *  !! Never use "none" on a productive system !!
       *  !!   It means, what it says, your data is  !!
       *  !!   not at all encrypted in the database  !!
+      * 
+      * "none": Password and result are stored in plain text in the database
+      * "hash": Password is hashed, Results are obfuscated (no encryption)
+      * "gpg":  
       *  
       */
-      public static $crypt_module = "none";
+      public static $default_crypt_module = "none";
+      
+      /* 
+       * The keys in $crypt_info define the choice when generating new Reson-IDs
+       * Remove "'none'' => ''," in productive systems  
+       */
       
       public static $crypt_info = array(
-      
+        'none' => '',
          // The following information is used when crypt_module is set to "hash"
       	'hash' => array(
           /*
@@ -50,7 +59,7 @@
        * password generation parameters
        */
       public static $pwd_gen_params = array(
-      	'length' => 12,
+      	'length' => 8,
       	'includeNumbers' => 1,
       	'includeLowerLetters' => 1,      	
       	'includeUpperLetters' => 1

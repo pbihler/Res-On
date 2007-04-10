@@ -34,29 +34,13 @@
          	foreach ($this->TABLES as $table_name => $table)
          		$this->TABLES[$table_name] = MainConfig::$database['db_prefix'] . $table;
      }
-     
-     /**
-      * Checks, whether the credentials for a project are ok
-      * 
-      * @param string password
-      * @param string project_id
-      * @return bool true if authentication is valid
-      */
-     public function checkAuthentication($password,$project_id) {
-     	$password = mysql_escape_string($password);
-     	$project_id = intval($project_id);
-        $res = mysql_query("SELECT project_id" .
-     					   " FROM " . $this->TABLES['projects'] . 
-                           " WHERE project_id = $project_id" . 
-                           " AND project_pwd = PASSWORD('$password')",$this->db_link); 
-        return mysql_num_rows($res) > 0;
-     }
-     
-     public function getProjectInfo($project_id) {
+    
+     public function getProjectInfo($project_id,$password) {
      	$project_id = intval($project_id);
      	$res = mysql_query("SELECT *" .
      					   " FROM " . $this->TABLES['projects'] . 
-                           " WHERE project_id = $project_id",$this->db_link); 
+                           " WHERE project_id = $project_id" . 
+                           " AND project_pwd = PASSWORD('$password')",$this->db_link); 
         return mysql_fetch_assoc($res);
      }
      
@@ -67,6 +51,37 @@
      	                   " SET project_name = '$name'" .
      	                   " WHERE project_id = $project_id");
      }
+     
+     public function getNextMemberId($project_id) {
+     	$project_id = intval($project_id);
+     	$resource = mysql_query("SELECT MAX(member_id) AS id" .
+     			           " FROM " . $this->TABLES['results'] . 
+     	                   " WHERE project_id = $project_id");
+     	$result = mysql_fetch_assoc($resource);
+     	return $result['id'] + 1;
+     }
+     
+     public function getMemberIdCount($project_id) {
+     	$project_id = intval($project_id);
+     	$resource = mysql_query("SELECT COUNT(member_id) AS count" .
+     			           " FROM " . $this->TABLES['results'] . 
+     	                   " WHERE project_id = $project_id");
+     	$result = mysql_fetch_assoc($resource);
+     	return $result['count'];
+     }
+     
+     public function createRkey($project_id,$member_id,$crypt_module,$crypt_data) {
+     	$project_id = intval($project_id);
+     	$member_id = intval($member_id);
+     	$crypt_module = mysql_escape_string($crypt_module);
+     	$crypt_data = mysql_escape_string($crypt_data);
+     	return mysql_query("INSERT INTO " . $this->TABLES['results'] . 
+     	                   " SET project_id = $project_id," .
+     	                   "     member_id = $member_id," .
+     	                   "     crypt_module = '$crypt_module'," .
+     	                   "     crypt_data = '$crypt_data'" );
+     }
+     
      
  }
  

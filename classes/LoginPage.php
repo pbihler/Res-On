@@ -13,8 +13,7 @@
  	
      function __construct($message = null) {
          parent::__construct();
-         $this->page_title = "Administration of Res-on"; 
-         $this->introduction = "Administration of Res-On"; 
+         $this->setTitle("Administration-Login");
          $this->menu = array("Home"=>"index.php") + $this->menu; 
          $this->message = $message;
      }

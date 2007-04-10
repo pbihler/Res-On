@@ -10,24 +10,23 @@
  class StartPage extends Page {
      function __construct() {
          parent::__construct();
-         $this->page_title = "Welcome to Res-On"; 
-         $this->introduction = "Welcome to Res-On and view your results online:"; 
+         $this->setTitle("View your Results online"); 
          $this->menu = array("Admin"=>"admin.php") + $this->menu; 
      }
      
      function renderNotes() {
-     	 //Maybe something usefull should come here (Login with Reson-Id etc.)
-         $this->renderNote('To administer, please go to <a href="admin.php">Administration</a>.','Administration');
-         /* $cr = new CryptProxy();
-         $pwd_gen = new ConfiguredPasswordGenerator();
-         echo $pwd = $pwd_gen->generatePassword();
-         echo "<br />";
-         echo $cd = $cr->generateCryptData($pwd);
-         echo "<br />";
-         echo $rd = $cr->encryptResult("heimlich",$cd);
-         echo "<br />";
-         echo $cr->decryptResult($rd,$cd,$pwd); */
-         // $this->renderNote('Another Content','Another Title','Another Date');
+     	 $this->renderNote($this->getResultRequestForm(),'Request results');
+     	 $this->writeJavascript('document.request_results_form.member_id.focus();');
+     }
+     
+     private function getResultRequestForm() {
+     	return sprintf('<div id="requestresults"><form method="POST" name="request_results_form">' .
+     			'R-Key: <input type="text" name="project_id" size="3" value="%03d" readonly="readonly" />-<input type="text" name="member_id" value="" size="7" maxlength="7" /><br />' .
+     			'Matric.-Number: <input type="text" name="mat_no" value="" /><br />' .
+     			'Password: <input type="password" name="password" value="" size="20" /><br />' .
+     			'<input type="submit" value="Request Results" />' .
+     			'</form></div>' .
+     			'',MainConfig::$default_project_id);
      }
      
  }
