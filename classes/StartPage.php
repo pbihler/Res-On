@@ -16,13 +16,13 @@
      
      function renderNotes() {
      	 $this->renderNote($this->getResultRequestForm(),'Request results');
-     	 $this->writeJavascript('document.request_results_form.member_id.focus();');
+     	 $this->writeJavascript('document.request_results_form.mat_no.focus();');
      }
      
      private function getResultRequestForm() {
-     	return sprintf('<div id="requestresults"><form method="POST" name="request_results_form">' .
-     			'R-Key: <input type="text" name="project_id" size="3" value="%03d" readonly="readonly" />-<input type="text" name="member_id" value="" size="7" maxlength="7" /><br />' .
-     			'Matric.-Number: <input type="text" name="mat_no" value="" /><br />' .
+     	return sprintf('<div id="requestresults"><form method="POST" name="request_results_form" autocomplete="off">' .
+     			'<input type="hidden" name="project_id" size="3" value="%03d" readonly="readonly" />' .
+     			'Mat.-Number: <input type="text" name="mat_no" value="" /><br />' .
      			'Password: <input type="password" name="password" value="" size="20" /><br />' .
      			'<input type="submit" value="Request Results" />' .
      			'</form></div>' .

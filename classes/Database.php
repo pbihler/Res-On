@@ -82,6 +82,14 @@
      	                   "     crypt_data = '$crypt_data'" );
      }
      
+     public function getProjectPdfTexts($project_id) {
+     	$project_id = intval($project_id);
+         $res = mysql_query("SELECT project_pdf_introduction as introduction, project_pdf_hint as hint" .
+     					   " FROM " . $this->TABLES['projects'] . 
+                           " WHERE project_id = $project_id"); 
+        return mysql_fetch_assoc($res);
+     }
+     
      
  }
  

@@ -38,7 +38,7 @@
                                 '      }' .
                                 '      crypt_module = document.keygen_form.crypt_module[document.keygen_form.crypt_module.selectedIndex].value;' .
                                 '      document.keygen_form.run_button.value="Cancel";' .
-                                '      document.getElementById("key_output").innerHTML = "<form action=\"' . $this->KEY_PDF_PHP . '\" method=\"POST\" target=\"_blank\"><table id=\"key_output_table\"><tbody id=\"key_output_table_body\"><tr><th class=\"out\">R-Key</th><th class=\"out\">Password</th></tr></tbody></table><input type=\"submit\" value=\"Generate PDF Handout\" /></form>";' .
+                                '      document.getElementById("key_output").innerHTML = "<form action=\"' . $this->KEY_PDF_PHP . '\" method=\"POST\" target=\"_blank\"><table id=\"key_output_table\"><tbody id=\"key_output_table_body\"><tr><th class=\"out\">R-Key</th><th class=\"out\">Password</th></tr></tbody></table><input type=\"submit\" value=\"Generate PDF Handout\" /><input type=\"hidden\" name=\"ext\" value=\".pdf\" /></form>";' .
                                 '      generate();' . 
                                 '    } else { '. 
                                 '      stop();' . 

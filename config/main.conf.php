@@ -73,13 +73,23 @@
           'username' => 'reson_access',
           'password' => 'j/fsOv2,',
           'database' => 'reson',
-          'db_prefix' => ''
+          'table_prefix' => ''
       );
       
       // contact e-mail:
       public static $contact_url = "mailto:info@res-on.org";
      
-      //As long as Res-on doesn't support multi-project, this number needs to be set:
+     /*
+      * PDF-Generation
+      */
+      public static $pdf_settings = array(
+      	'orientation' => 'P', // 'P' or 'Portrait' /  'L' or 'Landscape'
+      	'format' => 'A5',	  // A3, A4, A5, Letter, Legal      					
+      );
+     
+     
+     
+      //As long as Res-on doesn't support multi-projects, this number needs to be set:
       public static $default_project_id = 1;
      
         
