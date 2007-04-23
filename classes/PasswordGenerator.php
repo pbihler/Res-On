@@ -11,6 +11,9 @@
  */
 class PasswordGenerator
 {
+    
+   public static $passwordCharacterRegExp = '/^[a-zA-Z0-9]+$/';
+   
 	/**
 	 *
 	 * @param integer $number_of_chars
@@ -22,6 +25,7 @@ class PasswordGenerator
 	 * 1 - include upper letter, 0 - do not include upper letter
 	 * @return string
 	 */
+	 
 	public function generatePassword( 
 	$number_of_chars = 12, $include_number = 1, 
 	$include_lower_letter=1, $include_upper_letter=1 )

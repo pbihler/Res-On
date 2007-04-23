@@ -35,6 +35,23 @@
          		$this->TABLES[$table_name] = MainConfig::$database['db_prefix'] . $table;
      }
     
+    public function startTransaction() {
+        return mysql_query("START TRANSACTION",$this->db_link);
+    }
+    public function rollback() {
+        return mysql_query("ROLLBACK",$this->db_link);
+    }
+    public function commit() {
+        return mysql_query("COMMIT",$this->db_link);
+    }
+    public function affectedRows() {
+        return mysql_affected_rows($this->db_link);
+    }
+    
+    /**
+     * Project-Related functions
+     */
+    
      public function getProjectInfo($project_id,$password) {
      	$project_id = intval($project_id);
      	$res = mysql_query("SELECT *" .
@@ -49,14 +66,27 @@
      	$name = mysql_escape_string($name);
      	return mysql_query("UPDATE " . $this->TABLES['projects'] . 
      	                   " SET project_name = '$name'" .
-     	                   " WHERE project_id = $project_id");
+     	                   " WHERE project_id = $project_id",$this->db_link);
      }
      
+     
+     public function getProjectPdfTexts($project_id) {
+     	$project_id = intval($project_id);
+         $res = mysql_query("SELECT project_pdf_introduction as introduction, project_pdf_hint as hint" .
+     					   " FROM " . $this->TABLES['projects'] . 
+                           " WHERE project_id = $project_id",$this->db_link);
+        return mysql_fetch_assoc($res);
+     }
+     
+     /**
+      * Management of Results
+      */
+      
      public function getNextMemberId($project_id) {
      	$project_id = intval($project_id);
      	$resource = mysql_query("SELECT MAX(member_id) AS id" .
      			           " FROM " . $this->TABLES['results'] . 
-     	                   " WHERE project_id = $project_id");
+     	                   " WHERE project_id = $project_id",$this->db_link);
      	$result = mysql_fetch_assoc($resource);
      	return $result['id'] + 1;
      }
@@ -65,7 +95,7 @@
      	$project_id = intval($project_id);
      	$resource = mysql_query("SELECT COUNT(member_id) AS count" .
      			           " FROM " . $this->TABLES['results'] . 
-     	                   " WHERE project_id = $project_id");
+     	                   " WHERE project_id = $project_id",$this->db_link);
      	$result = mysql_fetch_assoc($resource);
      	return $result['count'];
      }
@@ -79,18 +109,46 @@
      	                   " SET project_id = $project_id," .
      	                   "     member_id = $member_id," .
      	                   "     crypt_module = '$crypt_module'," .
-     	                   "     crypt_data = '$crypt_data'" );
+     	                   "     crypt_data = '$crypt_data'" ,$this->db_link);
      }
      
-     public function getProjectPdfTexts($project_id) {
-     	$project_id = intval($project_id);
-         $res = mysql_query("SELECT project_pdf_introduction as introduction, project_pdf_hint as hint" .
-     					   " FROM " . $this->TABLES['projects'] . 
-                           " WHERE project_id = $project_id"); 
+     public function getResultDataByRKey($rkey) {
+     	$project_id = intval($rkey->getProjectId());
+     	$member_id = intval($rkey->getMemberId());
+         $res = mysql_query("SELECT *" .
+         		           " FROM " . $this->TABLES['results'] . 
+                           " WHERE project_id = $project_id" .
+                           "   AND member_id = $member_id",$this->db_link); 
         return mysql_fetch_assoc($res);
      }
      
+     public function getResultDataByMatNo($project_id,$mat_no,$ignore_member_id = null) {
+     	$project_id = intval($project_id);
+     	$mat_no = mysql_escape_string($mat_no);
+     	if ($ignore_member_id)
+     		$ignore_member_id = intval($ignore_member_id);
+         $res = mysql_query("SELECT *" .
+         		           " FROM " . $this->TABLES['results'] . 
+                           " WHERE project_id = $project_id" .
+                           "   AND mat_no = '$mat_no'" . 
+                           ($ignore_member_id ? 
+                              " AND NOT member_id = $ignore_member_id" :
+                              ""),$this->db_link); 
+        return mysql_fetch_assoc($res);
+     }
      
+     public function updateResultData($rkey,$mat_no,$result) {
+     	$project_id = intval($rkey->getProjectId());
+     	$member_id = intval($rkey->getMemberId());
+     	$mat_no = mysql_escape_string($mat_no);
+     	$result = mysql_escape_string($result);
+         $res = mysql_query("UPDATE " . $this->TABLES['results'] .
+         				   " SET mat_no = '$mat_no'," .
+         				   "     result = '$result' " . 
+                           " WHERE project_id = $project_id" .
+                           "   AND member_id = $member_id",$this->db_link); 
+        return mysql_fetch_assoc($res);
+     }
  }
  
  /**

@@ -24,3 +24,14 @@ that each reson is itself made up of a combination of at least five
 'flavours', known as 'up', 'down', 'sideways', 'sex appeal' and 
 'peppermint'." - Lords and Ladies
 
+--------------------------------------
+
+List of Characters: 
+http://en.wikipedia.org/wiki/Discworld_characters
+http://en.wikipedia.org/wiki/List_of_Discworld_characters
+http://de.wikipedia.org/wiki/Figuren_und_Schaupl%C3%A4tze_der_Scheibenwelt-Romane
+http://www.scheibenwelt.de/main.php?page=swpersonen
+
+Releases:
+0.1 - Abraxas (2007-04-22)
+

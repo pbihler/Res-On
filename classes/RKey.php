@@ -16,7 +16,14 @@
     
  	function __construct ($project_id,$member_id = null) {
  		if (! $member_id) {
- 			// The String in $project_id needs to be parsed
+ 			// The String in $project_id is parsed
+ 			if (preg_match('/^([0-9]+)-([0-9]+)([0-9X])$/i',$project_id,$elements)) {
+ 			    $this->project_id = $elements[1];
+ 			    $this->member_id = $elements[2];
+ 			    if ($this->getChecksum() != $elements[3]) 
+					throw new RKeyException('Checksum error');
+ 			} else 
+ 			    throw new RKeyException(sprintf('String "%s" is not a valid RKey.',$project_id));
  		} else {
  			$this->project_id = $project_id;
  			$this->member_id = $member_id;
@@ -26,7 +33,7 @@
  	 * Calculates the checksum (similar to ISBN)
  	 * member_id is assumed to be smaller 10^10
  	 */
-	function getChecksum() {
+	public function getChecksum() {
 		$sum = 0;
 		$numbers = str_split(strrev(sprintf("%d%09d",$this->project_id,$this->member_id)));
 		for ($i = 1; $i <= count($numbers);$i++) {
@@ -35,8 +42,23 @@
 		return $this->DICT[$sum % 11];
 	}
 	
+	public function getProjectId() {
+	    return $this->project_id;
+	}
+	
+	public function getMemberId() {
+	    return $this->member_id;
+	}
+	
 	public function __toString() {
 		return sprintf("%03d-%05d%s",$this->project_id,$this->member_id,$this->getChecksum());
 	}
+ }
+ 
+  /**
+  * An exception to throw if there is a rkey error
+  */
+ class RKeyException extends Exception {
+   //
  }
 ?>

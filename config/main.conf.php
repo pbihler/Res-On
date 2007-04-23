@@ -87,6 +87,8 @@
       	'format' => 'A5',	  // A3, A4, A5, Letter, Legal      					
       );
      
+     // The number of results which can be entered simultaniously
+     public static $numberOfDataSetsToEnter = 15;
      
      
       //As long as Res-on doesn't support multi-projects, this number needs to be set:
