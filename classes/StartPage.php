@@ -46,7 +46,7 @@
              //If not, we dont query the database, but we won't tell the intruder either
 	        $db = Database::getInstance();
          	$data = $db->getResultDataByMatNo($project_id,$mat_no);
-            $crypt = new CryptProxy($data['crypt_module']);
+            $crypt = new CryptProxy($data['crypt_module'], $project_id,$data['member_id']);
          	$decrypted_result = $crypt->decryptResult($data['result'],$data['crypt_data'],$pwd);
          	if ($decrypted_result)
          		$result_str = sprintf('<div class="result">%s</div>',$decrypted_result);

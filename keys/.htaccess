@@ -1,0 +1,2 @@
+#prohibit accessing files from this folder via webserver
+deny from all

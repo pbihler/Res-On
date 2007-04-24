@@ -52,6 +52,14 @@
            * CRYPT_BLOWFISH  16-character beginning with $2$
            */
           'salt' => '$2$kd(jmlokDK8kl' //change this!
+        ),
+         // The following information is used when crypt_module is set to "gpg"
+      	'gpg' => array(
+          'program_path' => 'c:\Program Files\GNU\GnuPG\gpg.exe', //Set the path to gpg executeable
+          'keyring_home' => 'keys/%03d', // the subdir has to writeable by the webserver
+          'key_type'     => 'DSA', //  type of the key, the allowed values are DSA and RSA
+          'key_length'   => 512, // Length of the key in bits
+          'subkey_length'   => 512 // Length of the subkey in bits
         )
       );
       

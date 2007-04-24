@@ -8,7 +8,10 @@
   * 
  */
  class CryptNone implements ICryptModule {
-     
+   
+   function __construct($project_id = 0, $member_id = 0) {
+   }
+   
     public function decryptResult($crypted_result,$crypt_data,$password = '') {
         if ($password == $crypt_data)
             return $crypted_result;

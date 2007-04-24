@@ -53,7 +53,7 @@
             
             $project_id = $this->project->getId();
             $member_id = $db-> getNextMemberId($project_id);
-            $crypt = new CryptProxy($crypt_module);
+            $crypt = new CryptProxy($crypt_module, $project_id,$member_id);
             $pw_gen = new ConfiguredPasswordGenerator();
             $password = $pw_gen->generatePassword();
             $crypt_data = $crypt->generateCryptData($password);

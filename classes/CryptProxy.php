@@ -11,17 +11,20 @@
     
     private $crypt_module;
     
-    function __construct($module_name = null) {
+    function __construct($module_name = null, $project_id = 0, $member_id = 0) {
     	
         if (! $module_name)
         	$module_name = MainConfig::$default_crypt_module;
         	
         switch($module_name) {
             case 'none':
-		    $this->crypt_module = new CryptNone();		   
-		    break;
-		default: // == 'hash'
-		    $this->crypt_module = new CryptHash();          
+			    $this->crypt_module = new CryptNone($project_id, $member_id);		   
+			    break;
+            case 'gpg':
+			    $this->crypt_module = new CryptGPG($project_id, $member_id);		   
+			    break;
+			default: // == 'hash'
+			    $this->crypt_module = new CryptHash($project_id, $member_id);          
         }
     }
     

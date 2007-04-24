@@ -9,6 +9,9 @@
  */
  class CryptHash implements ICryptModule {
      
+   function __construct($project_id = 0, $member_id = 0) {
+   }
+     
     public function decryptResult($crypted_result,$crypt_data,$password = '') {
         if (crypt($password, $crypt_data) == $crypt_data) 
         	return base64_decode($this->xorCrypt($crypted_result,$crypt_data));

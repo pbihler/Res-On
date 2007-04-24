@@ -202,7 +202,7 @@
             if (! $this->remark[$i] || $this->postValue('ignore',$i,null)) {
                 
                 // encrypt data:
-                $crypt = new CryptProxy($current_data['crypt_module']);
+                $crypt = new CryptProxy($current_data['crypt_module'], $this->project->getId(),$rkey->getMemberId());
                 $crypted_date = $crypt->encryptResult($date,$current_data['crypt_data']);
                 // Save data to database
                 $this->db->updateResultData($rkey,$mat_no,$crypted_date);

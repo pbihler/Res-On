@@ -11,7 +11,8 @@
  function __autoload($class_name) {
      
    $special_classes = array('MainConfig' => "config/main.conf.php",
-   						    'FPDF'       => "includes/fpdf/fpdf.php"
+   						    'FPDF'       => "includes/fpdf/fpdf.php",
+   						    'gnuPG'		 => "includes/gnuPG_class.inc"
    );
       
    // Handle exceptions:   

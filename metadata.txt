@@ -1,4 +1,4 @@
-ResOn 0.1 
+ResOn 0.2 
 
 Interface to access academic examination results online 
 in a privacy-respecting way.
@@ -34,4 +34,4 @@ http://www.scheibenwelt.de/main.php?page=swpersonen
 
 Releases:
 0.1 - Abraxas (2007-04-22)
-
+0.2 - Brutha
