@@ -49,7 +49,7 @@
          	echo "    <div id=\"introduction\">" . $this->introduction . "</div>\n";
          echo "    <div id=\"wrapperContent\">\n";
          $this->renderNotes();
-         $this->renderNote('All data is provided for informational purposes only and no responsibility is taken for the correctness of the information.<br /><br />Die hier angezeigten Daten dienen lediglich Informationszwecken.<br />Alle Informationen ohne Gew&auml;hr.','Important remark - Wichtiger Hinweis');
+         $this->renderNote('<b>Disclaimer:</b> All data is provided for informational purposes only and no responsibility is taken for the correctness of the information.<br /><br /><b>Haftungsausschluss:</b> Die hier angezeigten Daten dienen lediglich Informationszwecken.<br />Alle Informationen ohne Gew&auml;hr.','Important remark - Wichtiger Hinweis');
          echo "    </div>\n";
      }
      
