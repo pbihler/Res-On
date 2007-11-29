@@ -312,7 +312,7 @@
      		$js .= sprintf("csv_data[%d] = new Array(%d)\n",$i,count($row));
      		foreach ($row as $j => $data) {
      			$data = addslashes ($data);  // Escape Quote sign;
-     		    $js .= sprintf("csv_data[%d][%d] = '%s'\n",$i,$j,$data);
+     		    $js .= sprintf("csv_data[%d][%d] = '%s';",$i,$j,$data);
      		}
      	}
      	$js .= sprintf(' function toggle_headers() {' .
