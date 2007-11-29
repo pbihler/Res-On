@@ -12,6 +12,9 @@
  class EnterDataPage extends AdminPage {
      
      private $storeResult = -1;
+     private $csvDataSets = array();
+     private $processError = '';
+     private $numberOfCsvCols = 0;
      private $remark = array();
      private $db;
      
@@ -24,6 +27,15 @@
      
      function renderNotes() {      
          
+        $this->processError = '';
+        if (isset($_FILES['csvfile']))
+        	$this->processCsvImport();
+        	
+        if ($this->processError) {
+            $this->renderNote($this->processError,'Operation failed');
+        }
+        	
+        	
         if (isset($_POST['key']))
         	$this->processInput();
         	
@@ -42,6 +54,10 @@
         }
         $this->renderNote($this->generateDataForm(),'Enter data here:');
         $this->writeJavascript('document.enter_data_form.elements[0].focus();');
+        
+        if (count($this->csvDataSets) == 0) {
+         	$this->renderNote($this->generateCsvImportForm(),"Import from CSV file");
+        }
      
      }
      
@@ -60,22 +76,33 @@
              document.enter_data_form.elements["key["+$i+"]"].focus();
              document.getElementById("remark_"+$i).innerHTML = "";
          }');
-         $result = '<form method="POST" name="enter_data_form">';
+         	
+         $result .= '<form method="POST" name="enter_data_form">';
          
-         $result .= '<table id="enter_data">' .
-         		'<tr>' .
+         $result .= '<table id="enter_data">';
+         
+         $result .=	'<tr>' .
          		'<th>R-Key</th><th>Mat.-Number</th><th>Result</th><th>Remark</th>' .
          		'</tr>';
          
          
-         for ($i = 0; $i < MainConfig::$numberOfDataSetsToEnter; $i++) {
+         $max_datasets = max(MainConfig::$numberOfDataSetsToEnter,count($_POST['key']),count($_POST['mat_no']),count($_POST['data']));
+         
+         if (count($this->csvDataSets) > 0) {
+         	$result .= $this->CsvDataSelector();
+            $max_datasets = count($this->csvDataSets);
+         }
+         
+         
+         
+         for ($i = 0; $i < $max_datasets; $i++) {
              $hasRemark = isset($this->remark[$i]) && $this->remark[$i];
              $isIgnorable = isset($_POST['ignore'][$i]);
              
-             $result .= sprintf('<tr%s>',$hasRemark ? sprintf(' class="%s"', $isIgnorable ? 'warning' : 'error') : '');
-             $result .= sprintf('<td nowrap="nowrap">%03d&ndash;<input type="text" name="key[%d]" value="%s" size="10" maxlength="10" onchange="remIgnore(%1$d)" /></td>',$this->project->getId(),$i,$this->postValue('key',$i));
-             $result .= sprintf('<td><input type="text" name="mat_no[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$this->postValue('mat_no',$i));
-             $result .= sprintf('<td><input type="text" name="data[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$this->postValue('data',$i));
+             $result .= sprintf('<tr%s id="set_%d">',$hasRemark ? sprintf(' class="%s"', $isIgnorable ? 'warning' : 'error') : '',$i);
+             $result .= sprintf('<td nowrap="nowrap">%03d&ndash;<input type="text" name="key[%d]" id="key[%d]" value="%s" size="10" maxlength="10" onchange="remIgnore(%1$d)" /></td>',$this->project->getId(),$i,$i,$this->postValue('key',$i));
+             $result .= sprintf('<td><input type="text" name="mat_no[%d]" id="mat_no[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$i,$this->postValue('mat_no',$i));
+             $result .= sprintf('<td><input type="text" name="data[%d]" id="data[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$i,$this->postValue('data',$i));
              
              $result .= sprintf('<td id="remark_%d">',$i);
              if ($hasRemark) {
@@ -100,19 +127,30 @@
      private function processInput() {
          $this->storeResult = 0;
          
+         
+         // Strip header, if required
+         if ($_POST['csv_has_header']) {
+         	$_POST['key'][0] = '';
+         	$_POST['mat_no'][0] = '';
+         	$_POST['data'][0] = '';
+         }
+         
          //Inputs
          $keys = $_POST['key'];
          $mat_nos = $_POST['mat_no'];
          $data = $_POST['data'];
          $element_count = max(count($keys),count($mat_nos),count($data));
          
+         $nonempty_elements = $element_count;
+         	         
          //Check validity of inputs
          $commitData = true;
          
          $this->db->startTransaction();
-         for ($i =0; $i <$element_count; $i++) {
+         for ($i =  0; $i <$element_count; $i++) {
          	if (! $keys[$i] && ! $mat_nos[$i] && ! $data[$i]) {
                 unset($_POST['ignore'][$i]);
+                $nonempty_elements--;
          		continue;
          	}
          		
@@ -212,13 +250,19 @@
          }
          
          //Finish transaction
-         if ($commitData) {
+         if ($nonempty_elements == 0) {
+          	$this->db->rollback();
+         	$this->storeResult = -1;
+         } elseif ($commitData) {
          	$this->db->commit();
          } else {
           	$this->db->rollback();
             $this->storeResult = 0;
          }
      }
+     
+     
+     
      
      /**
       * To access a value (from POST) if set
@@ -229,6 +273,96 @@
          } else {
              return $default;
          }
+     }
+     
+     
+     
+     
+     /**
+      * Processes the uploaded CSV-file
+      */
+     private function processCsvImport() {
+     	if ($handle = fopen ($_FILES['csvfile']['tmp_name'],'r')) {
+     		$separator = urldecode($_POST['separator']);
+     		if (! $separator) $separator = ',';
+     		$c = 0;
+			while (($data = fgetcsv ($handle, 1024,$separator)) !== FALSE ) {
+				if (! $data || count($data) == 0 || ! $data[0])
+				    continue;
+				$this->numberOfCsvCols = max($this->numberOfCsvCols, count($data));
+				$this->csvDataSets[] = $data;
+			}
+			fclose ($handle);
+			if (count($this->csvDataSets) == 0) {
+				$this->processError = 'No data found in input file.';
+			}
+     	} else {
+     		$this->processError = 'Could not read the input file. ' + $_FILES['csvfile']['error'];
+     	}
+     	@unlink($_FILES['csvfile']['tmp_name']);
+     }
+     
+     /**
+      * creates a selct box for CSV data input
+      */
+     private function csvDataSelector() {
+     	
+     	$js = sprintf("var csv_data = new Array(%d)\n",count($this->csvDataSets));
+     	foreach ($this->csvDataSets as $i => $row) {
+     		$js .= sprintf("csv_data[%d] = new Array(%d)\n",$i,count($row));
+     		foreach ($row as $j => $data) {
+     			$data = addslashes ($data);  // Escape Quote sign;
+     		    $js .= sprintf("csv_data[%d][%d] = '%s'\n",$i,$j,$data);
+     		}
+     	}
+     	$js .= sprintf(' function toggle_headers() {' .
+     			'    var has_header = document.getElementById("csv_has_header").checked;' .
+     			'    var select_boxes = new Array("rkey_selector","matno_selector","result_selector");' .
+     			'    for(i=0;i<select_boxes.length;i++) {' .
+     			'        for (j=1;j<%d;j++) {' .
+     			'            document.getElementById(select_boxes[i]).options[j].text = has_header ? csv_data[0][j-1] : "Column " + j;' .
+     			'        }' .
+     			'    }' .
+     			'    document.getElementById("set_0").style.visibility = has_header ? "hidden" : "visible";' .
+     			'}',$this->numberOfCsvCols);
+     	$js .= sprintf(' function fill_col(selector,id) {' .
+     			'    var col = document.getElementById(selector).selectedIndex - 1;' .
+     			'    for (j=0;j<%d;j++) {' .
+     			'      document.getElementById(id + "[" + j + "]").value = csv_data[j][col];' .
+     			'    }' .
+     			'}',count($this->csvDataSets));
+     	$this->writeJavascript($js);
+     	
+     	$result = '<tr>';
+     	foreach (array('key' => 'rkey_selector','mat_no' => 'matno_selector','data' => 'result_selector') as $id => $selector) {
+	     	$result .= sprintf('<td><select id="%s" onchange="fill_col(\'%s\',\'%s\')">',$selector,$selector,$id);
+	     	$result .= '<option value="-1">Select column</option>';
+	     	for ($i = 0; $i < $this->numberOfCsvCols; $i++) {
+	     		$result .= sprintf('<option value="%d">Column %d</option>',$i,$i+1);	     		
+	     	}
+	     	$result .= '</select></td>';
+     	}
+     	$result .= '<td><input name="csv_has_header" type="checkbox" id="csv_has_header" onclick="toggle_headers()"> <label for="csv_has_header">Input file contains header</label></input></td>';
+         		
+        $result .= '</tr>';
+     	return $result;
+     }
+          	 
+     	 
+     /**
+      * Offers the option to upload a CSV file
+      */
+     private function generateCsvImportForm() {
+     	
+        $result = '<form method="POST" name="import_csv_form" enctype="multipart/form-data">';
+     	$result .= '<p>Select file: <input name="csvfile" type="file" /></p>';
+     	$result .= '<p>Separator: <select name="separator">';
+     	foreach(array(';' => ';',',' => ',',"\t" => 'Tab') as $sep => $sep_name) {
+     		$result .= sprintf('<option value="%s">%s</option>',urlencode($sep),$sep_name);
+     	}
+     	$result .= '</select> <input type="submit" value="Upload" /></p>';
+     	$result .= '</form>';
+     	return $result;
      }
  }
 ?>

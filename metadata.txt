@@ -34,4 +34,4 @@ http://www.scheibenwelt.de/main.php?page=swpersonen
 
 Releases:
 0.1 - Abraxas (2007-04-22)
-0.2 - Brutha
+0.2 - Brutha (2007-11-30)
