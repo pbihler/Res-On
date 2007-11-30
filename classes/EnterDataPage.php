@@ -20,8 +20,8 @@
      
      function __construct() {
          parent::__construct();
-         $this->setTitle(sprintf("Enter results for %s:", $this->project->getName()));
-                $this->menu = array("Admin Menu"=>"admin.php") + $this->menu; 
+         $this->setTitle(sprintf(Messages::getString('EnterDataPage.Title'), $this->project->getName()));
+                $this->menu = array(Messages::getString('General.AdminMenu')=>"admin.php") + $this->menu; 
          $this->db = Database::getInstance();
      }
      
@@ -32,7 +32,7 @@
         	$this->processCsvImport();
         	
         if ($this->processError) {
-            $this->renderNote($this->processError,'Operation failed');
+            $this->renderNote($this->processError,Messages::getString('General.OperationFailed'));
         }
         	
         	
@@ -40,7 +40,7 @@
         	$this->processInput();
         	
         if ($this->storeResult > 0) {
-            $this->renderNote(sprintf('%s data-sets successfully stored',$this->storeResult),'Operation successful');
+            $this->renderNote(sprintf(Messages::getString('EnterDataPage.SuccessMessage'),$this->storeResult),Messages::getString('General.OperationSuccessful'));
             
             //Clear POST data
             unset($_POST['key']);
@@ -50,13 +50,13 @@
             $this->remark = array();
             
         } elseif ($this->storeResult == 0) {
-            $this->renderNote(sprintf('Data could not be stored - please correct errors below.',$this->storeResult),'Operation failed!');
+            $this->renderNote(sprintf(Messages::getString('EnterDataPage.ErrorMessage'),$this->storeResult),Messages::getString('General.OperationFailed'));
         }
-        $this->renderNote($this->generateDataForm(),'Enter data here:');
+        $this->renderNote($this->generateDataForm(),Messages::getString('EnterDataPage.EnterDataHere'));
         $this->writeJavascript('document.enter_data_form.elements[0].focus();');
         
         if (count($this->csvDataSets) == 0) {
-         	$this->renderNote($this->generateCsvImportForm(),"Import from CSV file");
+         	$this->renderNote($this->generateCsvImportForm(),Messages::getString('EnterDataPage.ImportFromCsv'));
         }
      
      }
@@ -81,9 +81,9 @@
          
          $result .= '<table id="enter_data">';
          
-         $result .=	'<tr>' .
-         		'<th>R-Key</th><th>Mat.-Number</th><th>Result</th><th>Remark</th>' .
-         		'</tr>';
+         $result .=	sprintf('<tr>' .
+         		'<th>%s</th><th>%s</th><th>%s</th><th>%s</th>' .
+         		'</tr>',Messages::getString('General.RKey'),Messages::getString('General.MatNo'),Messages::getString('General.Result'),Messages::getString('General.Remark'));
          
          
          $max_datasets = max(MainConfig::$numberOfDataSetsToEnter,count($_POST['key']),count($_POST['mat_no']),count($_POST['data']));
@@ -109,9 +109,9 @@
                  $result .= $this->remark[$i];
                  $ignore = $this->postValue('ignore',$i,null);
                  if ($isIgnorable) {
-                     $result .= sprintf('<br /><input type="checkbox" name="ignore[%1$d]" value="1" %2$s/>&nbsp;Ignore',$i, $ignore ? 'checked="checked" ' : '');
+                     $result .= sprintf('<br /><input type="checkbox" name="ignore[%1$d]" value="1" %2$s/>&nbsp;%3$s',$i, $ignore ? 'checked="checked" ' : '',Messages::getString('General.Ignore'));
                  }
-                 $result .= sprintf(' <input type="button" value="Clear" onclick="clear_row(%1$d)" />',$i);
+                 $result .= sprintf(' <input type="button" value="%s" onclick="clear_row(%1$d)" />',Messages::getString('General.Clear'),$i);
              }
              $result .= '</td>';
              
@@ -119,8 +119,8 @@
          }
          
          $result .= '</table>';
-         $result .= '<input type="submit" value="Store data" />';         
-         $result .= '</form>';
+         $result .= sprintf('<input type="submit" value="%s" />',Messages::getString('EnterDataPage.StoreData'));         
+         $result .= '</form>&nbsp;';
          return $result;
      }
      
@@ -158,7 +158,7 @@
          
          	// check the R-Key
             if (! $keys[$i]) {
-                $this->remark[$i] = 'No RKey provided.';
+                $this->remark[$i] = Messages::getString('EnterDataPage.NoRKey');
                 $commitData = false; //Fatal Error
                 unset($_POST['ignore'][$i]);
                 continue;
@@ -167,7 +167,7 @@
             try {
 				$rkey = new RKey(sprintf('%03d-%s',$this->project->getId(),$keys[$i]));                
             } catch (Exception $e) {
-                $this->remark[$i] = 'RKey invalid.';
+                $this->remark[$i] = Messages::getString('EnterDataPage.RKeyInvalid');
                 $commitData = false; //Fatal Error
                 unset($_POST['ignore'][$i]);
                 continue;
@@ -175,7 +175,7 @@
             
             $current_data = $this->db->getResultDataByRKey($rkey);
             if (! $current_data) {
-                $this->remark[$i] = 'RKey not found.';
+                $this->remark[$i] = Messages::getString('EnterDataPage.RKeyNotFound');
                 $commitData = false; //Fatal Error
                 unset($_POST['ignore'][$i]);
                 continue;
@@ -183,7 +183,7 @@
              
             // check the Mat-No
             if (! $mat_nos[$i]) {
-                $this->remark[$i] = 'No matriculation number provided.';
+                $this->remark[$i] = Messages::getString('EnterDataPage.NoMatNo');
                 $commitData = false; //Fatal Error
                 unset($_POST['ignore'][$i]);
                 continue;
@@ -191,7 +191,7 @@
             $mat_no = $mat_nos[$i];
             
             if (! ctype_alnum($mat_no)) {
-                $this->remark[$i] = 'Matriculation number contains non-alphanumerical characters.';
+                $this->remark[$i] = Messages::getString('StartPage.MatNoInvalid');
                 $commitData = false; //Fatal Error
                 unset($_POST['ignore'][$i]);
                 continue;
@@ -201,7 +201,7 @@
             $alt_data = $this->db->getResultDataByMatNo($rkey->getProjectId(),$mat_no,$rkey->getMemberId());
             if ($alt_data) {
                 $alt_rkey = new RKey($alt_data['project_id'],$alt_data['member_id']);
-                $this->remark[$i] .= sprintf('Matriculation number already used for RKey %s. ',$alt_rkey);
+                $this->remark[$i] .= sprintf(Messages::getString('EnterDataPage.MatNoAlreadyUsedRKey'),$alt_rkey);
                 $commitData = false; //Fatal Error
                 unset($_POST['ignore'][$i]);
                 continue;
@@ -211,7 +211,7 @@
             
             // mat_no used?
             if ($current_data['mat_no'] && $current_data['mat_no'] != $mat_no) {
-                $this->remark[$i] .= sprintf('R-Key already used for matriculation number %s. ',$current_data['mat_no']);
+                $this->remark[$i] .= sprintf(Messages::getString('EnterDataPage.RKeyAlreadyUsedMatNo'),$current_data['mat_no']);
                 if (! $this->postValue('ignore',$i,null)) {
 	                $commitData = false; //Fatal Error
 	                $_POST['ignore'][$i] = false; // might be ignored the next time
@@ -221,7 +221,7 @@
             
             // check the Data
             if (! $data[$i]) {
-                $this->remark[$i] .= 'No result provided. ';
+                $this->remark[$i] .= Messages::getString('EnterDataPage.NoResultProvided');
                 if (! $this->postValue('ignore',$i,null)) {
 	                $commitData = false; //Fatal Error
 	                $_POST['ignore'][$i] = false; // might be ignored the next time
@@ -230,7 +230,7 @@
             $date = $data[$i];
             
             if ($current_data['result']) {
-                $this->remark[$i] .=  'Already a result stored for this R-Key. ';
+                $this->remark[$i] .=  Messages::getString('EnterDataPage.AlreadyResultStored');
                 if (! $this->postValue('ignore',$i,null)) {
 	                $commitData = false; //Fatal Error
 	                $_POST['ignore'][$i] = false; // might be ignored the next time
@@ -294,10 +294,10 @@
 			}
 			fclose ($handle);
 			if (count($this->csvDataSets) == 0) {
-				$this->processError = 'No data found in input file.';
+				$this->processError = Messages::getString('No data found in input file.');
 			}
      	} else {
-     		$this->processError = 'Could not read the input file. ' + $_FILES['csvfile']['error'];
+     		$this->processError = Messages::getString('EnterDataPage.CouldNotReadInputFile') + ' ' + $_FILES['csvfile']['error'];
      	}
      	@unlink($_FILES['csvfile']['tmp_name']);
      }
@@ -320,13 +320,14 @@
      			'    var select_boxes = new Array("rkey_selector","matno_selector","result_selector");' .
      			'    for(i=0;i<select_boxes.length;i++) {' .
      			'        for (j=1;j<%d;j++) {' .
-     			'            document.getElementById(select_boxes[i]).options[j].text = has_header ? csv_data[0][j-1] : "Column " + j;' .
+     			'            document.getElementById(select_boxes[i]).options[j].text = has_header ? csv_data[0][j-1] : "%s " + j;' .
      			'        }' .
      			'    }' .
      			'    document.getElementById("set_0").style.visibility = has_header ? "hidden" : "visible";' .
-     			'}',$this->numberOfCsvCols);
+     			'}',$this->numberOfCsvCols,Messages::getString('EnterDataPage.Column'));
      	$js .= sprintf(' function fill_col(selector,id) {' .
      			'    var col = document.getElementById(selector).selectedIndex - 1;' .
+     			'    if (col < 0) return;' .
      			'    for (j=0;j<%d;j++) {' .
      			'      document.getElementById(id + "[" + j + "]").value = csv_data[j][col];' .
      			'    }' .
@@ -336,13 +337,13 @@
      	$result = '<tr>';
      	foreach (array('key' => 'rkey_selector','mat_no' => 'matno_selector','data' => 'result_selector') as $id => $selector) {
 	     	$result .= sprintf('<td><select id="%s" onchange="fill_col(\'%s\',\'%s\')">',$selector,$selector,$id);
-	     	$result .= '<option value="-1">Select column</option>';
+	     	$result .= sprintf('<option value="-1">%s</option>',Messages::getString('EnterDataPage.SelectColumn'));
 	     	for ($i = 0; $i < $this->numberOfCsvCols; $i++) {
-	     		$result .= sprintf('<option value="%d">Column %d</option>',$i,$i+1);	     		
+	     		$result .= sprintf('<option value="%d">%s %d</option>',$i,Messages::getString('EnterDataPage.Column'),$i+1);	     		
 	     	}
 	     	$result .= '</select></td>';
      	}
-     	$result .= '<td><input name="csv_has_header" type="checkbox" id="csv_has_header" onclick="toggle_headers()"> <label for="csv_has_header">Input file contains header</label></input></td>';
+     	$result .= sprintf('<td><input name="csv_has_header" type="checkbox" id="csv_has_header" onclick="toggle_headers()"> <label for="csv_has_header">%s</label></input></td>',Messages::getString('EnterDatapage.InputFileContainsHeader'));
          		
         $result .= '</tr>';
      	return $result;
@@ -355,13 +356,13 @@
      private function generateCsvImportForm() {
      	
         $result = '<form method="POST" name="import_csv_form" enctype="multipart/form-data">';
-     	$result .= '<p>Select file: <input name="csvfile" type="file" /></p>';
-     	$result .= '<p>Separator: <select name="separator">';
-     	foreach(array(';' => ';',',' => ',',"\t" => 'Tab') as $sep => $sep_name) {
+     	$result .= sprintf('<p>%s: <input name="csvfile" type="file" /></p>',Messages::getString('EnterDataPage.SelectFile'));
+     	$result .= sprintf('<p>%s: <select name="separator">',Messages::getString('EnterDataPage.Separator'));
+     	foreach(array(';' => ';',',' => ',',"\t" => Messages::getString('General.Tab')) as $sep => $sep_name) {
      		$result .= sprintf('<option value="%s">%s</option>',urlencode($sep),$sep_name);
      	}
-     	$result .= '</select> <input type="submit" value="Upload" /></p>';
-     	$result .= '</form>';
+     	$result .= sprintf('</select> <input type="submit" value="%s" /></p>',Messages::getString('EnterDatapage.Upload'));
+     	$result .= '</form>&nbsp;';
      	return $result;
      }
  }

@@ -17,7 +17,7 @@ try {
 	 if (isset($_POST['pwd']) && $password = $_POST['pwd']) {
 	 	$session = Session::createNewSession($password);
 	 	if (! $session->isLoggedIn())
-	 		$msg = "Password not correct";
+	 		$msg = Messages::getString('General.PasswordWrong');
 	 }
 } catch (Exception $exception){ // in this case, render exception as error.
 	$msg=$exception;

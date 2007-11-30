@@ -10,8 +10,8 @@
  class StartPage extends Page {
      function __construct() {
          parent::__construct();
-         $this->setTitle("View Your Results Online"); 
-         $this->menu = array("Admin"=>"admin.php") + $this->menu; 
+         $this->setTitle(Messages::getString('StartPage.Title'));
+         $this->menu = array(Messages::getString('General.Admin')=>"admin.php") + $this->menu; 
      }
      
      function renderNotes() {
@@ -20,28 +20,28 @@
          if (isset($_POST['mat_no']) && $_POST['mat_no']) {
              $this->renderResult();
          } else {
-	     	 $this->renderNote($this->getResultRequestForm(),'Request results');
-	     	 $this->writeJavascript('document.request_results_form.mat_no.focus();');
+	     	 $this->renderNote($this->getResultRequestForm(),Messages::getString('StartPage.RequestResults'));
+	     	// $this->writeJavascript('document.request_results_form.mat_no.focus();');
          }
      }
      
      private function renderResult() {
          $mat_no = $_POST['mat_no'];
          if (! ctype_alnum($mat_no)) {
-             $this->renderError('Matriculation number contains non-alphanumerical characters');
+             $this->renderError(Messages::getString('StartPage.MatNoInvalid'));
          	 return;
          }
          $project_id = $_POST['project_id'];
          if (! ctype_digit($project_id)) {
-             $this->renderError('Project-id invalid');
+             $this->renderError(Messages::getString('StartPage.ProjectIdInvalid'));
          	 return;
          }
          $pwd = $_POST['password'];
          if (! $pwd) {
-             $this->renderError('Password empty');
+             $this->renderError(Messages::getString('StartPage.PasswordEmpty'));
              return;
          }
-         $result_str = 'No results for this combination of matriculation number and password found.';
+         $result_str = Messages::getString('StartPage.NoResultsFound');
          if (preg_match(PasswordGenerator::$passwordCharacterRegExp,$pwd)) {
              //If not, we dont query the database, but we won't tell the intruder either
 	        $db = Database::getInstance();
@@ -51,22 +51,26 @@
          	if ($decrypted_result)
          		$result_str = sprintf('<div class="result">%s</div>',$decrypted_result);
          }
-         $this->renderNote($result_str,sprintf('Results for matriculation number %s:',$mat_no));
+         $this->renderBackNote($result_str,sprintf(Messages::getString('StartPage.Results'),$mat_no));
          
      }
      
      private function renderError($error) {
-             $this->renderNote(sprintf('<div class="error">%s</div>' .
-             		'<div class="back"><input type="button" value="Back" onclick="history.back();" /></div>',$error),'Error');         
+             $this->renderBackNote(sprintf('<div class="error">%s</div>',$error),Messages::getString('General.Error'));         
+     }
+     
+     protected function renderBackNote($text, $title = '', $date = '') {
+             parent::renderNote(sprintf('%s' .
+             		'<div class="back"><input type="button" value="%s" onclick="history.back();" /></div>',$text,Messages::getString('General.Back')),$title,$date);         
      }
      private function getResultRequestForm() {
      	return sprintf('<div id="requestresults"><form method="POST" name="request_results_form" autocomplete="off">' .
      			'<input type="hidden" name="project_id" size="3" value="%03d" readonly="readonly" />' .
-     			'Mat.-Number: <input type="text" name="mat_no" value="" size="10" /><br />' .
-     			'Password: <input type="password" name="password" value="" size="10" /><br />' .
-     			'<input type="submit" value="Request Results" />' .
-     			'</form></div>' .
-     			'',MainConfig::$default_project_id);
+     			'<label for="mat_no">%s: </label><input type="text" name="mat_no" value="" size="10" class="startinput" /><br />' .
+     			'<label for="password">%s: </label><input type="password" name="password" value="" size="10" class="startinput" />&nbsp;' .
+     			'<input type="submit" value="%s" id="requestbutton" />' .
+     			'</form>&nbsp;</div>' .
+     			'',MainConfig::$default_project_id,Messages::getString('General.MatNo'),Messages::getString('General.Password'),Messages::getString('StartPage.RequestResults'));
      }
      
  }

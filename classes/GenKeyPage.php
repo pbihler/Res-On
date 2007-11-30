@@ -15,7 +15,7 @@
        * Overwrites render to generate "like text" output
        */
  	  public function render() {
-         echo "<html><head></head><body><pre>";
+         echo "<html><head></head><body style=\"padding:0px;margin:0px; background-color:#F4F4F4;\"><pre>";
          $result = $this->renderContent();
          if ($result) {
          	$this->writeJavascript(vsprintf('parent.store_result("%s","%s");',$result));
@@ -33,20 +33,20 @@
             return null;
          $crypt_module = $_GET['crypt'];
          if (! isset(MainConfig::$crypt_info[$crypt_module])) {
-         	echo "Encryption module $crypt_module not found.";
+         	echo sprintf(Messages::getString('GenKeyPage.EncryptionModuleNotFound'),$crypt_module);
          	return null;
          }
          
          $current = intval($_GET['current']);
          $max = intval($_GET['max']);
          if ($current > $max) {
-         	echo sprintf("Index error: %d/%d",$current,$max);
+         	echo sprintf(Messages::getString('GenKeyPage.IndexError'),$current,$max);
          	return null;
          } 
          
          try {
             //Now generate the key
-            echo sprintf('Generating R-Key %d of %d...',$current,$max);
+            echo sprintf(Messages::getString('GenKeyPage.Generating'),$current,$max);
             flush();
             
             $db = Database::getInstance();
@@ -58,7 +58,7 @@
             $password = $pw_gen->generatePassword();
             $crypt_data = $crypt->generateCryptData($password);
             if (! $db->createRkey($project_id,$member_id,$crypt_module,$crypt_data)) {
-            	echo "Error inserting RKey!";
+            	echo Messages::getString('GenKeyPage.ErrorInsertingRKey');
             	return null;
             }
             
@@ -67,7 +67,7 @@
             $result = array($rkey,$password);
             
             
-            echo " finished.";
+            echo ' ' . Messages::getString('GenKeyPage.Finished');
             flush();            
          } catch (Exception $e) {
          	echo $e;

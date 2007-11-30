@@ -10,7 +10,7 @@
  final class Info {
      public static $formated_title = 'Res-<span class="highlight">On</span>';
      
-     public static $version = '0.2 (Brutha)';
+     public static $version = '0.3 (Conina)';
      
      public static function footer() {
          return 'Res-On v' . Info::$version . ' - &copy;&nbsp;2007 by <a href="http://www.res-on.org">res-on.org</a>';

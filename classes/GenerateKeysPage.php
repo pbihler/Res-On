@@ -21,8 +21,8 @@
      
  	 function __construct() {
          parent::__construct();
-         $this->setTitle(sprintf("Generate new R-Keys for %s (Id: %03d)", $this->project->getName(),$this->project->getId()));
-         $this->menu = array("Admin Menu"=>"admin.php") + $this->menu; 
+         $this->setTitle(sprintf(Messages::getString('GenerateKeysPage.Title'), $this->project->getName(),$this->project->getId()));
+         $this->menu = array(Messages::getString('General.AdminMenu')=>"admin.php") + $this->menu; 
      }
      
      protected function renderNotes() {
@@ -32,13 +32,13 @@
                                 '    if (current_key == 0) {' . 
                                 '      max_key = parseInt(document.keygen_form.key_count.value,0);' . 
                                 '      if (isNaN(max_key) || max_key == 0) { '.
-                                '          alert("Please enter a number > 0");' .
+                                sprintf('          alert("%s");',Messages::getString('GenerateKeysPage.EnterNumberBiggerZero')) .
                                 '          document.keygen_form.key_count.focus();' .
                                 '          return;' .
                                 '      }' .
                                 '      crypt_module = document.keygen_form.crypt_module[document.keygen_form.crypt_module.selectedIndex].value;' .
-                                '      document.keygen_form.run_button.value="Cancel";' .
-                                '      document.getElementById("key_output").innerHTML = "<form action=\"' . $this->KEY_PDF_PHP . '\" method=\"POST\" target=\"_blank\"><table id=\"key_output_table\"><tbody id=\"key_output_table_body\"><tr><th class=\"out\">R-Key</th><th class=\"out\">Password</th></tr></tbody></table><input type=\"submit\" value=\"Generate PDF Handout\" /><input type=\"hidden\" name=\"ext\" value=\".pdf\" /></form>";' .
+                                sprintf('      document.keygen_form.run_button.value="%s";',Messages::getString('General.Cancel')) .
+                                sprintf('      document.getElementById("key_output").innerHTML = "<form action=\"' . $this->KEY_PDF_PHP . '\" method=\"POST\" target=\"_blank\"><table id=\"key_output_table\"><tbody id=\"key_output_table_body\"><tr><th class=\"out\">%s</th><th class=\"out\">%s</th></tr></tbody></table><input type=\"submit\" value=\"%s\" /><input type=\"hidden\" name=\"ext\" value=\".pdf\" /></form>&nbsp;";',Messages::getString('General.RKey'),Messages::getString('General.Password'),Messages::getString('GenerateKeysPage.GeneratePdf')) .
                                 '      generate();' . 
                                 '    } else { '. 
                                 '      stop();' . 
@@ -47,7 +47,7 @@
                                 'function generate() {' . 
                                 '    current_key++;' .
                                 '    if (current_key > max_key) { stop(); return; }' . 
-                                '    document.keygen_form.run_button.value="Cancel";' .
+                                sprintf('    document.keygen_form.run_button.value="%s";',Messages::getString('General.Cancel')) .
                                 '    keygen_frame.location.href = "' . $this->GEN_KEY_PHP . '?crypt=" + escape(crypt_module) + "&current=" + current_key + "&max=" + max_key;' .
                                 '}' .
                                 'function store_result(reson_key,password) {' .
@@ -57,24 +57,43 @@
                                 'function stop() {' . 
                                 '    current_key = 0;' .
                                 '    max_key = 0;' . 
-                                '    document.keygen_form.run_button.value="Run";'. 
+                                sprintf('    document.keygen_form.run_button.value="%s";',Messages::getString('General.Run')). 
                                 '}' .
                                 'function add_table_line(key,pwd) {' .
                                 '    table = document.getElementById("key_output_table_body");' .
                                 '    newTR = document.createElement("tr");' .
                                 '    table.appendChild(newTR);' .
-                                '    newTR.innerHTML="<input type=\"hidden\" name=\"key[]\" value=\"" + key + "\" /><input type=\"hidden\" name=\"pwd[]\" value=\"" + pwd + "\" /><td class=\"out\">" + key + "</td><td class=\"out\">" + pwd + "</td>";' .
+                                '    newTD = document.createElement("td");' .
+                                '    newTD.setAttribute("class","out");' .
+                                '    newTR.appendChild(newTD);' .
+                                '    text = document.createTextNode(key);' .
+                                '    newTD.appendChild(text);' .
+                                '    inp = document.createElement("input");' .
+                                '    inp.setAttribute("type","hidden");' .
+                                '    inp.setAttribute("name","key[]");' .
+                                '    inp.setAttribute("value",key);' .
+                                '    newTD.appendChild(inp);' .
+                                '    newTD = document.createElement("td");' .
+                                '    newTD.setAttribute("class","out");' .
+                                '    newTR.appendChild(newTD);' .
+                                '    text = document.createTextNode(pwd);' .
+                                '    newTD.appendChild(text);' .
+                                '    inp = document.createElement("input");' .
+                                '    inp.setAttribute("type","hidden");' .
+                                '    inp.setAttribute("name","pwd[]");' .
+                                '    inp.setAttribute("value",pwd);' .
+                                '    newTD.appendChild(inp);' .
                                 '}' );
                                 
          $note = '<form name="keygen_form" onsubmit="clickRunButton(); return false;">' .
-         		'Number of keys: <input type="text" name="key_count" value="1" size="5" />' .
-         		'&nbsp;<input type="button" name="run_button" value="Run" onclick="clickRunButton();" />' .
+         		sprintf('%s: <input type="text" name="key_count" value="1" size="5" />',Messages::getString('GenerateKeysPage.NumberOfKeys')) .
+         		sprintf('&nbsp;<input type="button" name="run_button" value="%s" onclick="clickRunButton();" />',Messages::getString('General.Run')) .
          		'<br />' .
-         		'Encryption module: ' . $this->getCryptSelect() .
+         		sprintf('%s: %s',Messages::getString('GenerateKeysPage.EncryptionModule'),$this->getCryptSelect()) .
          		'</form>' .
-         		'<iframe src="'. $this->GEN_KEY_PHP . '" name="keygen_frame" id="keygen_frame" scrolling="no">No Key-Generation</iframe><br />';         
-         $this->renderNote($note,'R-Key Generation');      
-         $this->renderNote('<div id="key_output" style="text-align:center">None</div>','New R-Keys');
+         		sprintf('<iframe src="%s" name="keygen_frame" id="keygen_frame" scrolling="no" frameborder="0">%s</iframe><br />',$this->GEN_KEY_PHP,Messages::getString('GenerateKeysPage.NoKeyGeneration'));         
+         $this->renderNote($note,Messages::getString('GenerateKeysPage.RKeyGeneration'));      
+         $this->renderNote(sprintf('<div id="key_output" style="text-align:center">%s</div>',Messages::getString('General.None')),Messages::getString('GenerateKeysPage.NewRKeys'));
 
      }
      
@@ -84,7 +103,7 @@
      		$result .= '<option value="' . $module .'"';
      		if ($module == MainConfig::$default_crypt_module)
      		   $result .= ' selected="selected"';
-     		$result .= '>' . $module . '</option';
+     		$result .= '>' . $module . '</option>';
      	}
      	$result .= '</select>';
      	return $result;

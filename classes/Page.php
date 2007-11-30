@@ -27,10 +27,42 @@
     		exit;
          }
          
+         //Set language
+         $lang = $this->getLanguageFromBrowser();
+         Messages::setLanguage($lang);
+         
          if (MainConfig::$contact_url) 
-             $this->menu += array('Contact' => MainConfig::$contact_url);
+             $this->menu += array(Messages::getString('Page.Contact') => MainConfig::$contact_url);
+             
              
      }
+     
+     /**
+      * Tries to get the selected language from the browser (simple heuristic)
+      */
+      private function getLanguageFromBrowser() {
+      	
+        $available_languages = array_keys(MainConfig::$languages);
+        
+        if (($selected_lang = $_GET['l']) && (in_array($selected_lang,$available_languages))) {
+        	// Take language selected via GET
+        	setcookie('language',$selected_lang,0,'',MainConfig::$require_ssl);
+        } elseif (($selected_lang = $_COOKIE['language']) && (in_array($selected_lang,$available_languages))) {
+        	// Take language from cookie
+        } else {
+	      	$browser_languages = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+	      	$selected_lang = "";
+	      	$selected_pos = strlen($browser_languages);
+	        foreach ($available_languages as $lang) {
+	        	$pos = strpos($browser_languages,$lang);
+	        	if (($pos !== false) && ($pos < $selected_pos)) {
+	        		$selected_pos = $pos;
+	        	    $selected_lang = $lang;
+	        	}
+	        }
+        }
+        return $selected_lang;
+      }
      
      /*
       * Renders the content of the page 
@@ -82,6 +114,7 @@
       * To produce valid html, render_footer has to be called after this
       */
      private function renderHeader() {
+     	global $PHP_SELF;
          ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -108,6 +141,18 @@
     </div>
     
     <div id="sep">&nbsp;</div>
+    <div id="language_bar"><?php 
+    
+    foreach (MainConfig::$languages as $lang_code => $lang_info) {
+    	echo sprintf('<a href="%1$s?l=%2$s"><img src="format/%3$s" alt="%4$s" title="%4$s" %5$s /></a>',
+    	    $PHP_SELF,
+    	    $lang_code,
+    	    $lang_info['icon'],
+    	    $lang_info['name'],
+    	    $lang_code == Messages::getLanguage() ? 'class="sel"' : '');
+    }
+    
+    ?></div>
          
          <?php
      }
@@ -121,6 +166,7 @@
     <?php echo Info::footer(); ?>
   </div>
 </div>
+<div id="uniLogo">&nbsp;</div>
 </body>
 </html>
 		<?php

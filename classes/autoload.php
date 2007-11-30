@@ -10,14 +10,15 @@
   */
  function __autoload($class_name) {
      
-   $special_classes = array('MainConfig' => "config/main.conf.php",
+   $class_mapping = array('MainConfig' => "config/main.conf.php",
    						    'FPDF'       => "includes/fpdf/fpdf.php",
-   						    'gnuPG'		 => "includes/gnuPG_class.inc"
+   						    'gnuPG'		 => "includes/gnuPG_class.inc",
+   						    'Properties' => "includes/Properties.php"
    );
       
    // Handle exceptions:   
-   	if (isset($special_classes[$class_name]))
-   		$class_name = $special_classes[$class_name];
+   	if (isset($class_mapping[$class_name]))
+   		$class_name = $class_mapping[$class_name];
    	else
        	$class_name .= '.php';
   

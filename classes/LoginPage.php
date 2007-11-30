@@ -13,8 +13,8 @@
  	
      function __construct($message = null) {
          parent::__construct();
-         $this->setTitle("Administration-Login");
-         $this->menu = array("Home"=>"index.php") + $this->menu; 
+         $this->setTitle(Messages::getString('LoginPage.Title'));
+         $this->menu = array(Messages::getString('General.Home')=>"index.php") + $this->menu; 
          $this->message = $message;
      }
      
@@ -24,16 +24,16 @@
          if ($this->message) 
              $note = $this->formatError($this->message) . $note;
          
-         $this->renderNote($note,'Please login to access the administration:');
+         $this->renderNote($note,Messages::getString('LoginPage.PleaseLogin'));
      	 $this->writeJavascript('document.login_form.pwd.focus();');
      }
      
      private function getLoginForm() {
          return '<form action="admin.php" name="login_form" method="post"><div id="loginform">' .
-         		'  Please enter your password: ' .
+         		sprintf('  %s: ',Messages::getString('LoginPage.EnterPassword')) .
          		'  <input type="password" name="pwd" value="" /> ' .
          		'  <input type="submit" value="Login" />' .
-         		'</div></form>';
+         		'</div></form>&nbsp;';
      }
      
  }

@@ -25,10 +25,10 @@
          //Open database connection
          $this->db_link = mysql_connect(MainConfig::$database['server'], MainConfig::$database['username'], MainConfig::$database['password']);
          if (! $this->db_link || mysql_errno() != 0) 
-			throw new DatabaseConnectionException('Could not establish a database connection');
+			throw new DatabaseConnectionException(Messages::getString('Database.NoConnection'));
 		
 		 if (! mysql_select_db(MainConfig::$database['database'],$this->db_link))
-		 	throw new DatabaseConnectionException('Could not establish open database');
+		 	throw new DatabaseConnectionException(Messages::getString('Database.NoOpen'));
          
          if (isset(MainConfig::$database['db_prefix']))
          	foreach ($this->TABLES as $table_name => $table)

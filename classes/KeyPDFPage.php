@@ -56,30 +56,30 @@
 		        return;
 		    }
 		}
-		$this->renderError($pdf,'No valid R-Key/Password combination provided.');	    
+		$this->renderError($pdf,Messages::getString('KeyPDFPage.NoValidCredentials'));	    
  	}
  	
  	private function AddCredentialPage($pdf,$key,$pwd) {
 		$pdf->AddPage();
-		$pdf->SetFont('Arial','B',16);
-		$pdf->Cell(0,18,'Credentials for Res-On access',0,1); 
+		$pdf->SetFont('Arial','B',14);
+		$pdf->Cell(0,18,html_entity_decode(Messages::getString('KeyPDFpage.Credentials')),0,1); 
 		
 		
-		$pdf->SetFont('Arial','',12);
+		$pdf->SetFont('Arial','',10);
 		$pdf->Ln();
 		$pdf->WriteHTML(0,14,sprintf($this->pdfTexts['introduction'],$key)); 		
 		$pdf->Ln();
 		
 		$pdf->Ln();
 		$pdf->SetFont('Courier','B',14);
-		$pdf->Cell(100,16,'R-Key:'); 
+		$pdf->Cell(100,16,html_entity_decode(Messages::getString('General.RKey')) . ':'); 
 		$pdf->Cell(100,16,$key); 
 		$pdf->Ln();
-		$pdf->Cell(100,16,'Password:'); 
+		$pdf->Cell(100,16,html_entity_decode(Messages::getString('General.Password')).':'); 
 		$pdf->Cell(100,16,$pwd); 
 		$pdf->Ln();
 		
-		$pdf->SetFont('Arial','',12);
+		$pdf->SetFont('Arial','',10);
 		$pdf->Ln();
 		$pdf->WriteHTML(0,14,sprintf($this->pdfTexts['hint'],$this->url)); 		
 		$pdf->Ln();
@@ -90,7 +90,7 @@
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','B',16);
 		$pdf->SetTextColor(255,0,0);
-		$pdf->Write(18,'Error: ' . $error); 
+		$pdf->Write(18,sprintf('%s: %s',html_entity_decode(Messages::getString('General.Error')),$error)); 
  	    
  	}
  }
@@ -110,7 +110,7 @@ class PDF_HTML extends FPDF
     function WriteHTML($width, $height, $html)
     {
         //HTML parser
-        $html=str_replace("\n",' ',$html);
+        $html=html_entity_decode(str_replace("\n",' ',$html));
         $a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
         foreach($a as $i=>$e)
         {

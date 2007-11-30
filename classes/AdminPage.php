@@ -15,7 +15,7 @@
          parent::__construct();
          $this->session = Session::getInstance();
          $this->project = $this->session->getProject(); 
-         $this->menu = array("Logout"=>"logout.php") + $this->menu; 
+         $this->menu = array(Messages::getString('General.Logout')=>"logout.php") + $this->menu; 
      }
  }
 ?>

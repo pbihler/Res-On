@@ -1,9 +1,9 @@
-ResOn 0.2 
+ResOn 0.3
 
 Interface to access academic examination results online 
 in a privacy-respecting way.
 
-Developed 2007 by Pascal Bihler and Björn Krüger.
+Developed 2007 by Pascal Bihler, Institute for Informatics III, University of Bonn.
 
 
 -------------------------------------
@@ -35,3 +35,4 @@ http://www.scheibenwelt.de/main.php?page=swpersonen
 Releases:
 0.1 - Abraxas (2007-04-22)
 0.2 - Brutha (2007-11-30)
+0.3 - Conina

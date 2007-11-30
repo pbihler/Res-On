@@ -31,7 +31,7 @@
       * "gpg":  
       *  
       */
-      public static $default_crypt_module = "none";
+      public static $default_crypt_module = "hash";
       
       /* 
        * The keys in $crypt_info define the choice when generating new Reson-IDs
@@ -102,6 +102,12 @@
       //As long as Res-on doesn't support multi-projects, this number needs to be set:
       public static $default_project_id = 1;
      
-        
+      //Available languages:
+      public static $languages = array(
+        'en' => array('name' => 'English',
+                      'icon' => 'english_icon.gif'),
+        'de' => array('name' => 'Deutsch',
+                      'icon' => 'german_icon.gif')
+      );
  }
 ?>
