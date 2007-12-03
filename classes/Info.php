@@ -13,7 +13,7 @@
      public static $version = '0.3 (Conina)';
      
      public static function footer() {
-         return 'Res-On v' . Info::$version . ' - &copy;&nbsp;2007 by <a href="http://www.res-on.org">res-on.org</a>';
+         return '<a href="http://www.res-on.org">Res-On v' . Info::$version . ' - &copy;&nbsp;2007 by res-on.org</a>';
      }
      
      

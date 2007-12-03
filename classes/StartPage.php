@@ -66,8 +66,8 @@
      private function getResultRequestForm() {
      	return sprintf('<div id="requestresults"><form method="POST" name="request_results_form" autocomplete="off">' .
      			'<input type="hidden" name="project_id" size="3" value="%03d" readonly="readonly" />' .
-     			'<label for="mat_no">%s: </label><input type="text" name="mat_no" value="" size="10" class="startinput" /><br />' .
-     			'<label for="password">%s: </label><input type="password" name="password" value="" size="10" class="startinput" />&nbsp;' .
+     			'<label id="startformlabel" for="mat_no">%s: </label><input type="text" name="mat_no" value="" size="10" class="startinput" /><br />' .
+     			'<label id="startformlabel" for="password">%s: </label><input type="password" name="password" value="" size="10" class="startinput" />&nbsp;' .
      			'<input type="submit" value="%s" id="requestbutton" />' .
      			'</form>&nbsp;</div>' .
      			'',MainConfig::$default_project_id,Messages::getString('General.MatNo'),Messages::getString('General.Password'),Messages::getString('StartPage.RequestResults'));

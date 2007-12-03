@@ -15,7 +15,7 @@
        * Overwrites render to generate "like text" output
        */
  	  public function render() {
-         echo "<html><head></head><body style=\"padding:0px;margin:0px; background-color:#F4F4F4;\"><pre>";
+         echo "<html><head></head><body style=\"padding:0px;margin:0px; background-color:#FFFFFF;\"><pre>";
          $result = $this->renderContent();
          if ($result) {
          	$this->writeJavascript(vsprintf('parent.store_result("%s","%s");',$result));

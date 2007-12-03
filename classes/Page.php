@@ -81,13 +81,12 @@
          	echo "    <div id=\"introduction\">" . $this->introduction . "</div>\n";
          echo "    <div id=\"wrapperContent\">\n";
          $this->renderNotes();
-         $this->renderNote('<b>Disclaimer:</b> All data is provided for informational purposes only and no responsibility is taken for the correctness of the information.<br /><br /><b>Haftungsausschluss:</b> Die hier angezeigten Daten dienen lediglich Informationszwecken.<br />Alle Informationen ohne Gew&auml;hr.','Important remark - Wichtiger Hinweis');
+         $this->renderNote('<b>Disclaimer:</b> All data is provided for informational purposes only and no responsibility is taken for the correctness of the information.<br /><br /><b>Haftungsausschluss:</b> Die hier angezeigten Daten dienen lediglich Informationszwecken. Alle Informationen ohne Gew&auml;hr.','Important remark - Wichtiger Hinweis');
          echo "    </div>\n";
      }
      
      protected function setTitle($title) {
-     	 $this->page_title = $title . " - Res-On"; 
-         $this->introduction = $title; 
+     	 $this->page_title = $title; 
      }
      
      protected function renderNotes() {
@@ -116,32 +115,28 @@
      private function renderHeader() {
      	global $PHP_SELF;
          ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" href="format/style.css" type="text/css" />
-  <title><?php echo $this->page_title ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title><?php echo $this->page_title ?> - Res-On</title>
+<link href="format/style.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
 
-<div id="wrapperAll">
-	
-  <div id="content">
-	
-    <div id="topWrapper">
-      <div id="logo"><?php echo Info::$formated_title; ?></div>
-      <div id="menu">
-       <ul>
-       <?php foreach ($this->menu as $caption => $link) { ?>
-       	<li>&raquo;&nbsp;<a href="<?php echo $link; ?>"><?php echo $caption; ?></a></li>
-       <?php } ?>
-       </ul>
-      </div>
-    </div>
-    
-    <div id="sep">&nbsp;</div>
-    <div id="language_bar"><?php 
+<div id="wrapper">
+
+<div id="header">
+<h1><?php echo Info::$formated_title; ?></h1>
+<h3><?php echo $this->page_title ?></h3>
+</div>
+
+<div id="menu">
+<?php foreach ($this->menu as $caption => $link) { ?> 
+      	<a href="<?php echo $link; ?>" class="link"><?php echo $caption; ?></a>
+<?php } ?>
+<div id="language_bar"><?php 
     
     foreach (MainConfig::$languages as $lang_code => $lang_info) {
     	echo sprintf('<a href="%1$s?l=%2$s"><img src="format/%3$s" alt="%4$s" title="%4$s" %5$s /></a>',
@@ -152,7 +147,12 @@
     	    $lang_code == Messages::getLanguage() ? 'class="sel"' : '');
     }
     
-    ?></div>
+    ?></div> 
+</div>
+        
+<div id="contentwrapper"><div id="content">
+    
+  
          
          <?php
      }
@@ -160,13 +160,14 @@
      private function renderFooter() {
          
          ?>
+</div></div>
+
+<div id="footer">
+<?php echo Info::footer(); ?>
 </div>
-  
-  <div id="bottom">
-    <?php echo Info::footer(); ?>
-  </div>
+
 </div>
-<div id="uniLogo">&nbsp;</div>
+
 </body>
 </html>
 		<?php
@@ -185,26 +186,14 @@
          return '<div class="error">' . $message . "</div><br />\n";
      }
      
-     protected function renderNote($text, $title = '', $date = '') {
+     protected function renderNote($text, $title = '') {
          ?>
-      <div id="note">
-        <div id="noteTop">
-          &nbsp;
-        </div>
-        <div id="noteContent">
-          <?php if ($title) { ?>
-            <div id="title"><?php echo $title; ?></div>
+         <?php if ($title) { ?>
+            <h3><?php echo $title; ?></h3>
           <?php } ?>
+		<p>
           <?php echo $text; ?>
-          <?php if ($date) { ?>
-             <div id="date"><?php echo $date; ?></div>
-          <?php } ?>
-          
-        </div>
-        <div id="noteBottom">
-          &nbsp;
-        </div>
-      </div>
+		</p>
          <?php
      }
       

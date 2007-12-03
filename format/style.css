@@ -1,152 +1,134 @@
-/* Main stylesheet for ResOn */
+/* :.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.: */
+	/*     CSS Document for NatureMiner      */
+	/* .:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:. */
+	/* Code & Design by http://InFlash.Net */
+	/* :.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.: */
+* {
+	padding: 0px;
+	margin: 0px;
+	font-family: Arial, Helvetica, sans-serif;
+}
 
 body {
-        font-family: Lucida Sans Unicode, Lucida Sans;
-        font-size: 12px;
-        color: #666666;
-        background: #CCCCCC;
-				text-align: center;
+	background-color: #ececec;
+	background-image: url(bg.gif);
+	background-repeat: repeat-x;
 }
 
-input, select {
-        font-family: Lucida Sans Unicode, Lucida Sans;
-        font-size: 10px;
-        color: #666666;
-        background: #CCCCCC;
-        border: 1px solid #666666;
+#wrapper {
+	width: 700px;
+	height: auto;
+	margin: 0 auto;
+	border-left: 5px solid #CCCCCC;
+	border-right: 5px solid #CCCCCC;
 }
 
-a {
-        text-decoration: none;
-        color: #666666;
+#header {
+	background-image: url(header.png);
+	background-repeat: no-repeat;
+	width: 700px;
+	height: 100px;
 }
 
-a:hover {
-        text-decoration: underline;
-        color: #393839;
+#header h1 {
+	color: #e0e0e0;
+	padding-left: 15px;
+	padding-top: 15px;
+	text-decoration: none;
 }
 
-
-div#title {
-        border-left: 5px solid #718F49;
-        padding-left:3px;
-        margin-bottom:10px;
-        font-weight: bold;
-}
-        
-div#date {
-        text-align: right;
-        padding:5px;
-        font-style: italic;
+#header h1:hover {
+	color: #FFFFFF;
 }
 
-div#introduction {
-        padding-left: 25px;
-        padding-right: 20px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        text-align: left;
-        font-weight: bold;
+#header h3 {
+	color: #e0e0e0;
+	padding-left: 30px;
+	text-decoration: none;
 }
 
-div#wrapperAll {
-        width: 660px;
-				margin: auto;
+#header h3:hover {
+	color: #FFFFFF;
 }
 
-div#topWrapper {
-        clear: both;
-        padding-left:20px;
-        padding-right:20px;
+#menu {
+	background-image: url(mf.gif);
+	background-position: top;
+	background-repeat: repeat-x;
+	width: 700px;
+	height: 20px;
 }
 
-div#logo {
-        width: 272px;
-        height: 37px;
-        text-align: left;
-				font-size: 27px;
-				padding-left:3px;
-        float:left;
+#menu a.link {
+	background-image: url(mf.gif);
+	background-position: top;
+	background-repeat: repeat-x;
+	text-align: center;
+	font-size: 12px;
+	height: 20px;
+	color: #001100;
+	display: block;
+	width: 100px;
+	text-decoration: none;
+	float: left;
 }
 
-span.highlight {
-	color: #718F49;
+#menu a.link:hover {
+	background-position: bottom;
+	color: #002200;
 }
 
-div#menu {
-        text-align: right;
-        height: 37px;
-        padding-right:10px;
-        color: #718F49;
+#contentwrapper {
+	background-color: #ffffff;
 }
 
-div#menu ul {
-	margin:0; 
-	padding:0; 
-        padding-top:15px;
+#content {
+	background: url(mint.png) bottom right no-repeat;
+	padding: 5px;
+	width: 690px;
+	color: #666666;
+	height: auto;
+	min-height: 500px;
+	font-size: 12px;
 }
 
-div#menu li {
-	margin:0; 
-	padding:0; 
-	list-style:none; 
-	display:inline;
-	padding-left:5px;
+#content h3 {
+	padding: 10px;
 }
 
-div#sep {
-        background-image: url('sep.png');
-        background-repeat: no-repeat;
-        height:14px;
-        clear: both;
+#content p,#content form {
+	padding: 0px 15px;
 }
 
-div#content {
-        background-image: url('border.png');
-        background-repeat: repeat-y;
-        margin:0px;
-        clear: both;
+#content ul {
+	padding-left: 30px;
 }
 
-div#wrapperContent {
-        clear: both;
-				text-align: center;
+#footer {
+	background-image: url(mf.gif);
+	background-position: top;
+	background-repeat: repeat-x;
+	width: 700px;
+	height: 20px;
 }
 
-div#note {
-        margin-left: auto;
-        margin-right: auto;
-        width: 591px;
+#footer a {
+	background-image: url(mf.gif);
+	background-position: top;
+	background-repeat: repeat-x;
+	text-align: center;
+	font-size: 12px;
+	height: 20px;
+	color: #001100;
+	display: block;
+	width: 700px;
+	text-decoration: none;
+	float: left;
 }
 
-div#noteTop {
-        background-image: url('note_top.png');
-        background-repeat: no-repeat;
-        height:16px;
-}
+#footer a:hover { /*background-position: bottom;*/ /*color: #002200;*/}
 
-div#noteContent {
-        background-image: url('note_bg.png');
-        background-repeat: repeat-y;
-        text-align: justify;
-        padding-left: 10px;
-        padding-right: 10px;
-}
-
-div#noteBottom {
-        background-image: url('note_bot.png');
-        background-repeat: no-repeat;
-        height:16px;
-}
-
-div#bottom {
-        height: 60px;
-        font-size:10px;
-        background-image: url('bottom.png');
-        background-repeat: no-repeat;
-        margin:0px;
-        padding-top:20px;
-}
+/*  special styles */
 
 div#loginform {
 		text-align:center;
@@ -205,11 +187,11 @@ table#enter_data tr.warning td {
 	background: #ffffaf;
 }
 
-/* The language selector */
 
 div#language_bar {
 	text-align:right;
-	padding-right:22px;
+	padding-top:4px;
+	padding-right:0px;
 }
 div#language_bar img {
     margin: 1px 3px;
@@ -231,7 +213,7 @@ div#uniLogo {
     background-repeat: no-repeat;
 }
 
-label {
+#startformlabel {
   float:left;
   clear:both;
   display:block;
