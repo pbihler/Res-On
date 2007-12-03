@@ -38,7 +38,7 @@
 		 }
 		 
          $result = '<form action="admin.php" name="login_form" method="post"><div id="loginform">';
-         if (count($this->frontpage_info) > 1) {
+         if (count($frontpage_info) > 1) {
 	        $result .= sprintf('<label for="project_id">%s: </label>',Messages::getString('General.Project'));
 	     	$result .= '<select name="project_id" id="project_id_selector">';
 	     	foreach ($frontpage_info as $id => $project) {
@@ -48,7 +48,7 @@
 	     	}	
 	     	$result .= '</select><br/>';
      	 } else {
-     		foreach ($this->frontpage_info as $id => $project) {
+     		foreach ($frontpage_info as $id => $project) {
 	     	    $result .= sprintf('<input type="hidden" name="project_id" value="%03d" %s />',$id);
 	     	}	
      	 }
