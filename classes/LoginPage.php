@@ -49,7 +49,7 @@
 	     	$result .= '</select><br/>';
      	 } else {
      		foreach ($frontpage_info as $id => $project) {
-	     	    $result .= sprintf('<input type="hidden" name="project_id" value="%03d" %s />',$id);
+	     	    $result .= sprintf('<input type="hidden" name="project_id" value="%03d" />',$id);
 	     	}	
      	 }
          $result .=  		sprintf('<label for="password">%s: </label>',Messages::getString('LoginPage.EnterPassword')) .

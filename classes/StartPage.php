@@ -120,7 +120,7 @@
 	     	$result .= '</select><br/>';
      	} else {
      		foreach ($this->frontpage_info as $id => $project) {
-	     	    $result .= sprintf('<input type="hidden" name="project_id" value="%03d" %s />',$id);
+	     	    $result .= sprintf('<input type="hidden" name="project_id" value="%03d" />',$id);
 	     	}	
      	}
      	$result .=	sprintf('<label class="startformlabel" for="mat_no">%s: </label><input type="text" name="mat_no" value="" size="10" class="startinput" /><br />',Messages::getString('General.MatNo')) .
