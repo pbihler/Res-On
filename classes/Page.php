@@ -46,7 +46,7 @@
         
         if (($selected_lang = $_GET['l']) && (in_array($selected_lang,$available_languages))) {
         	// Take language selected via GET
-        	setcookie('language',$selected_lang,0,'',Config::$require_ssl);
+        	setcookie('language',$selected_lang,0,'/',Config::$require_ssl);
         } elseif (($selected_lang = $_COOKIE['language']) && (in_array($selected_lang,$available_languages))) {
         	// Take language from cookie
         } else {
