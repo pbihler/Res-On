@@ -160,8 +160,8 @@
      private function renderFooter() {
          
          ?>
+<div id="unilogo">&nbsp;</div>
 </div></div>
-
 <div id="footer">
 <?php echo Info::footer(); ?>
 </div>

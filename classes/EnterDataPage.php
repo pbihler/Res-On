@@ -73,7 +73,8 @@
              document.enter_data_form.elements["key["+$i+"]"].value="";
              document.enter_data_form.elements["mat_no["+$i+"]"].value="";
              document.enter_data_form.elements["data["+$i+"]"].value="";
-             document.enter_data_form.elements["key["+$i+"]"].focus();
+             document.enter_data_form.elements["key["+$i+"]"].focus();' .
+             		'document.getElementById("set_" + $i).className="";
              document.getElementById("remark_"+$i).innerHTML = "";
          }');
          	
@@ -111,7 +112,7 @@
                  if ($isIgnorable) {
                      $result .= sprintf('<br /><input type="checkbox" name="ignore[%1$d]" value="1" %2$s/>&nbsp;%3$s',$i, $ignore ? 'checked="checked" ' : '',Messages::getString('General.Ignore'));
                  }
-                 $result .= sprintf(' <input type="button" value="%s" onclick="clear_row(%1$d)" />',Messages::getString('General.Clear'),$i);
+                 $result .= sprintf(' <input type="button" value="%s" onclick="clear_row(%2$d)" />',Messages::getString('General.Clear'),$i);
              }
              $result .= '</td>';
              
@@ -119,7 +120,7 @@
          }
          
          $result .= '</table>';
-         $result .= sprintf('<input type="submit" value="%s" />',Messages::getString('EnterDataPage.StoreData'));         
+         $result .= sprintf('<input type="submit" value="%s" id="submit_data" />',Messages::getString('EnterDataPage.StoreData'));         
          $result .= '</form>&nbsp;';
          return $result;
      }
@@ -307,9 +308,9 @@
       */
      private function csvDataSelector() {
      	
-     	$js = sprintf("var csv_data = new Array(%d)\n",count($this->csvDataSets));
+     	$js = sprintf("var csv_data = new Array(%d);",count($this->csvDataSets));
      	foreach ($this->csvDataSets as $i => $row) {
-     		$js .= sprintf("csv_data[%d] = new Array(%d)\n",$i,count($row));
+     		$js .= sprintf("csv_data[%d] = new Array(%d);",$i,count($row));
      		foreach ($row as $j => $data) {
      			$data = addslashes ($data);  // Escape Quote sign;
      		    $js .= sprintf("csv_data[%d][%d] = '%s';",$i,$j,$data);
@@ -343,7 +344,7 @@
 	     	}
 	     	$result .= '</select></td>';
      	}
-     	$result .= sprintf('<td><input name="csv_has_header" type="checkbox" id="csv_has_header" onclick="toggle_headers()"> <label for="csv_has_header">%s</label></input></td>',Messages::getString('EnterDatapage.InputFileContainsHeader'));
+     	$result .= sprintf('<td><input name="csv_has_header" type="checkbox" id="csv_has_header" onclick="toggle_headers()">&nbsp;<label for="csv_has_header">%s</label></input></td>',Messages::getString('EnterDatapage.InputFileContainsHeader'));
          		
         $result .= '</tr>';
      	return $result;

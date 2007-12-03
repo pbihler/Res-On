@@ -84,12 +84,13 @@ body {
 
 #content {
 	background: url(mint.png) bottom right no-repeat;
-	padding: 5px;
+	padding: 5px 5px 45px 5px;
 	width: 690px;
 	color: #666666;
 	height: auto;
 	min-height: 500px;
 	font-size: 12px;
+	position:relative;
 }
 
 #content h3 {
@@ -186,6 +187,9 @@ table#enter_data tr.error td {
 table#enter_data tr.warning td {
 	background: #ffffaf;
 }
+#submit_data {
+	margin-left:300px;
+}
 
 
 div#language_bar {
@@ -202,11 +206,11 @@ div#language_bar img.sel {
     border: 2px solid #AAAAAA;
 }
 
-div#uniLogo {
-	width:203px;
-	height:50px;
+div#unilogo {
+	width:122px;
+	height:30px;
 	margin:10px;
-	position:fixed;
+	position:absolute;
 	right:0px;
 	bottom:0px;
 	background-image: url('uni_bonn.png');
@@ -226,3 +230,4 @@ div#uniLogo {
 input#requestbutton {
    margin: -1em 0px 1em 30px;
  }
+ 
