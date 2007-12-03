@@ -173,7 +173,7 @@
          				   "     result = '$result' " . 
                            " WHERE project_id = $project_id" .
                            "   AND member_id = $member_id",$this->db_link); 
-        return mysql_fetch_assoc($res);
+        return;
      }
  }
  
