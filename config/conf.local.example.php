@@ -1,5 +1,7 @@
 <?php
 
+//Rename to "conf.local.php" to enable
+
 // Local configuration (overwrites defaults)
 //Config::$require_ssl = true;
 //Config::$default_crypt_module = "gpg";
