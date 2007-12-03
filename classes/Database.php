@@ -23,16 +23,16 @@
      
      protected function __construct(){
          //Open database connection
-         $this->db_link = mysql_connect(MainConfig::$database['server'], MainConfig::$database['username'], MainConfig::$database['password']);
+         $this->db_link = mysql_connect(Config::$database['server'], Config::$database['username'], Config::$database['password']);
          if (! $this->db_link || mysql_errno() != 0) 
 			throw new DatabaseConnectionException(Messages::getString('Database.NoConnection'));
 		
-		 if (! mysql_select_db(MainConfig::$database['database'],$this->db_link))
+		 if (! mysql_select_db(Config::$database['database'],$this->db_link))
 		 	throw new DatabaseConnectionException(Messages::getString('Database.NoOpen'));
          
-         if (isset(MainConfig::$database['db_prefix']))
+         if (isset(Config::$database['db_prefix']))
          	foreach ($this->TABLES as $table_name => $table)
-         		$this->TABLES[$table_name] = MainConfig::$database['db_prefix'] . $table;
+         		$this->TABLES[$table_name] = Config::$database['db_prefix'] . $table;
      }
     
     public function startTransaction() {
@@ -67,6 +67,32 @@
      	return mysql_query("UPDATE " . $this->TABLES['projects'] . 
      	                   " SET project_name = '$name'" .
      	                   " WHERE project_id = $project_id",$this->db_link);
+     }
+     
+     /*
+      * Returns the project info if only if the access is open
+      */
+     public function accessOpen($project_id) {
+     	$project_id = intval($project_id);
+        $res = mysql_query("SELECT * FROM " . $this->TABLES['projects'] . 
+                           " WHERE project_id = $project_id" .
+                           "   AND access_open = 'yes'",$this->db_link); 
+        return mysql_fetch_assoc($res);
+     	
+     }
+     
+     /** 
+      * returns project information to render the frontpage
+      */
+     public function getFrontpageInfo() {
+         $res = mysql_query("SELECT project_id as id, project_name as name, frontpage_info as info, access_open as access" .
+     					   " FROM " . $this->TABLES['projects']);
+     					   
+        $result = array();
+        while($project = mysql_fetch_object($res)) {
+        	$result[$project->id] = $project;
+        }
+        return $result;
      }
      
      

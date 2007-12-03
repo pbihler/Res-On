@@ -32,7 +32,7 @@
      	if (! isset($_GET['crypt']))
             return null;
          $crypt_module = $_GET['crypt'];
-         if (! isset(MainConfig::$crypt_info[$crypt_module])) {
+         if (! isset(Config::$crypt_info[$crypt_module])) {
          	echo sprintf(Messages::getString('GenKeyPage.EncryptionModuleNotFound'),$crypt_module);
          	return null;
          }

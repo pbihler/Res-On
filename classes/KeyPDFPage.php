@@ -34,7 +34,7 @@
        */
  	public function render() {
 		
-        $pdf=new PDF_HTML(MainConfig::$pdf_settings['orientation'],'pt',MainConfig::$pdf_settings['format']);
+        $pdf=new PDF_HTML(Config::$pdf_settings['orientation'],'pt',Config::$pdf_settings['format']);
  	    $this->renderPDF($pdf);
 		$pdf->Output("rkeys.pdf","I");
  	}

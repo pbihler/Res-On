@@ -10,7 +10,7 @@
   */
  function __autoload($class_name) {
      
-   $class_mapping = array('MainConfig' => "config/main.conf.php",
+   $class_mapping = array('Config' => "config/conf.php",
    						    'FPDF'       => "includes/fpdf/fpdf.php",
    						    'gnuPG'		 => "includes/gnuPG_class.inc",
    						    'Properties' => "includes/Properties.php"

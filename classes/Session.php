@@ -57,7 +57,7 @@
      static function createNewSession($password, $project_id = null) {
         
         if (! $project_id) 
-           $project_id = MainConfig::$default_project_id;
+           $project_id = Config::$default_project_id;
         
         // Delete old Session object from php_session cache
         // and create new session_id to prevent session fixation:

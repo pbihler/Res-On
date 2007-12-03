@@ -16,7 +16,7 @@
         $this->project_id = $project_id;
         $this->member_id = $member_id;
         
-        $keyring_home = sprintf(MainConfig::$crypt_info['gpg']['keyring_home'],$project_id);
+        $keyring_home = sprintf(Config::$crypt_info['gpg']['keyring_home'],$project_id);
         
         // create absolute path:
         if (substr($keyring_home,0,1) != '/' && 
@@ -31,7 +31,7 @@
         // Create keyrings
         if (! file_exists("$keysing_home/secring.gpg") || ! file_exists("$keysing_home/pubring.gpg"))
         
-        $this->gpg = new gnuPG(MainConfig::$crypt_info['gpg']['program_path'], $keyring_home);
+        $this->gpg = new gnuPG(Config::$crypt_info['gpg']['program_path'], $keyring_home);
  	}
      
     public function decryptResult($crypted_result,$crypt_data,$password = '') {
@@ -63,10 +63,10 @@
                                            $key_name, 
                                            $password,
                                            0,
-                                           MainConfig::$crypt_info['gpg']['key_type'],
-                                           MainConfig::$crypt_info['gpg']['key_length'],
+                                           Config::$crypt_info['gpg']['key_type'],
+                                           Config::$crypt_info['gpg']['key_length'],
                                            'ELG-E',
-                                           MainConfig::$crypt_info['gpg']['subkey_length']);
+                                           Config::$crypt_info['gpg']['subkey_length']);
 		
 		if (! $generated_key)  
 		   throw new GPGException($this->gpg->error);

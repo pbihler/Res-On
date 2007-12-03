@@ -14,7 +14,7 @@
     function __construct($module_name = null, $project_id = 0, $member_id = 0) {
     	
         if (! $module_name)
-        	$module_name = MainConfig::$default_crypt_module;
+        	$module_name = Config::$default_crypt_module;
         	
         switch($module_name) {
             case 'none':

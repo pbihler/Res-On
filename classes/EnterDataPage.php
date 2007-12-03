@@ -87,7 +87,7 @@
          		'</tr>',Messages::getString('General.RKey'),Messages::getString('General.MatNo'),Messages::getString('General.Result'),Messages::getString('General.Remark'));
          
          
-         $max_datasets = max(MainConfig::$numberOfDataSetsToEnter,count($_POST['key']),count($_POST['mat_no']),count($_POST['data']));
+         $max_datasets = max(Config::$numberOfDataSetsToEnter,count($_POST['key']),count($_POST['mat_no']),count($_POST['data']));
          
          if (count($this->csvDataSets) > 0) {
          	$result .= $this->CsvDataSelector();

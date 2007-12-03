@@ -24,7 +24,7 @@
     }
     
     public function generateCryptData($password){
-        return crypt($password,MainConfig::$crypt_info['hash']['salt']);
+        return crypt($password,Config::$crypt_info['hash']['salt']);
     }
     
     /*

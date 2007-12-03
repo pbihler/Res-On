@@ -132,7 +132,13 @@ body {
 /*  special styles */
 
 div#loginform {
-		text-align:center;
+		text-align:left;
+}
+div#loginform label {
+  float:left;
+  clear:both;
+  display:block;
+  width:200px;
 }
 
 div.error {
@@ -217,7 +223,12 @@ div#unilogo {
     background-repeat: no-repeat;
 }
 
-#startformlabel {
+div#unilogo a {
+	width:122px;
+	height:30px;
+}
+
+.startformlabel {
   float:left;
   clear:both;
   display:block;

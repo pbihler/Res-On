@@ -15,10 +15,10 @@
      }
      
      public function generatePassword(){
- 	    return $this->generator->generatePassword(MainConfig::$pwd_gen_params['length'],
- 	    		        						  MainConfig::$pwd_gen_params['includeNumbers'],
- 	    				       				      MainConfig::$pwd_gen_params['includeLowerLetters'],
- 	    								          MainConfig::$pwd_gen_params['includeUpperLetters']);
+ 	    return $this->generator->generatePassword(Config::$pwd_gen_params['length'],
+ 	    		        						  Config::$pwd_gen_params['includeNumbers'],
+ 	    				       				      Config::$pwd_gen_params['includeLowerLetters'],
+ 	    								          Config::$pwd_gen_params['includeUpperLetters']);
  	 }
      
  }

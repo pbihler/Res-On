@@ -21,7 +21,7 @@
      function __construct() {
          
          // Check if SSL is required, maybe redirect
-         if (MainConfig::$require_ssl  && $_SERVER['HTTPS'] != "on") {
+         if (Config::$require_ssl  && $_SERVER['HTTPS'] != "on") {
             $url = "https://". $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
     		header("Location: $url");
     		exit;
@@ -31,8 +31,8 @@
          $lang = $this->getLanguageFromBrowser();
          Messages::setLanguage($lang);
          
-         if (MainConfig::$contact_url) 
-             $this->menu += array(Messages::getString('Page.Contact') => MainConfig::$contact_url);
+         if (Config::$contact_url) 
+             $this->menu += array(Messages::getString('Page.Contact') => Config::$contact_url);
              
              
      }
@@ -42,11 +42,11 @@
       */
       private function getLanguageFromBrowser() {
       	
-        $available_languages = array_keys(MainConfig::$languages);
+        $available_languages = array_keys(Config::$languages);
         
         if (($selected_lang = $_GET['l']) && (in_array($selected_lang,$available_languages))) {
         	// Take language selected via GET
-        	setcookie('language',$selected_lang,0,'',MainConfig::$require_ssl);
+        	setcookie('language',$selected_lang,0,'',Config::$require_ssl);
         } elseif (($selected_lang = $_COOKIE['language']) && (in_array($selected_lang,$available_languages))) {
         	// Take language from cookie
         } else {
@@ -77,8 +77,10 @@
       * Override this function to write some other page style than just notes
       */
      protected function renderPageContent() {
-	     if ($this->introduction) 
-         	echo "    <div id=\"introduction\">" . $this->introduction . "</div>\n";
+         echo "    <span id=\"introduction\">"; 
+	     if ($this->introduction) echo $this->introduction;
+	     echo "</span>\n";
+	     
          echo "    <div id=\"wrapperContent\">\n";
          $this->renderNotes();
          $this->renderNote('<b>Disclaimer:</b> All data is provided for informational purposes only and no responsibility is taken for the correctness of the information.<br /><br /><b>Haftungsausschluss:</b> Die hier angezeigten Daten dienen lediglich Informationszwecken. Alle Informationen ohne Gew&auml;hr.','Important remark - Wichtiger Hinweis');
@@ -138,7 +140,7 @@
 <?php } ?>
 <div id="language_bar"><?php 
     
-    foreach (MainConfig::$languages as $lang_code => $lang_info) {
+    foreach (Config::$languages as $lang_code => $lang_info) {
     	echo sprintf('<a href="%1$s?l=%2$s"><img src="format/%3$s" alt="%4$s" title="%4$s" %5$s /></a>',
     	    $PHP_SELF,
     	    $lang_code,

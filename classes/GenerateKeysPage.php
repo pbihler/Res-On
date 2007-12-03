@@ -99,9 +99,9 @@
      
      private function getCryptSelect() {
      	$result = '<select name="crypt_module">';
-     	foreach (array_keys(MainConfig::$crypt_info) as $module) {
+     	foreach (array_keys(Config::$crypt_info) as $module) {
      		$result .= '<option value="' . $module .'"';
-     		if ($module == MainConfig::$default_crypt_module)
+     		if ($module == Config::$default_crypt_module)
      		   $result .= ' selected="selected"';
      		$result .= '>' . $module . '</option>';
      	}

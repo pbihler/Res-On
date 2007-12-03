@@ -15,7 +15,7 @@ $msg = null;
 //check, whether there was some login attempt:
 try { 
 	 if (isset($_POST['pwd']) && $password = $_POST['pwd']) {
-	 	$session = Session::createNewSession($password);
+	 	$session = Session::createNewSession($password,$_POST['project_id']);
 	 	if (! $session->isLoggedIn())
 	 		$msg = Messages::getString('General.PasswordWrong');
 	 }
