@@ -108,15 +108,21 @@
              		'<div class="back"><input type="button" value="%s" onclick="history.back();" /></div>',$text,Messages::getString('General.Back')),$title,$date);         
      }
      private function getResultRequestForm() {
-     	$result = '<div id="requestresults"><form method="POST" name="request_results_form" autocomplete="off">' .
-     	  		    sprintf('<label class="startformlabel" for="project_id">%s: </label>',Messages::getString('General.Project'));
-     	$result .= '<select name="project_id" id="project_id_selector" onchange="updateProjectInfo();">';
-     	foreach ($this->frontpage_info as $id => $project) {
-     	    $result .= sprintf('<option value="%03d" %s>%s&nbsp;&nbsp;</option>',$id,
-     	        ($id == Config::$default_project_id ? 'selected="selected"' : ''),
-     	        		$project->name);
-     	}	
-     	$result .= '</select><br/>';
+     	$result = '<div id="requestresults"><form method="POST" name="request_results_form" autocomplete="off">';
+     	if (count($this->frontpage_info) > 1) {
+	     	$result .= sprintf('<label class="startformlabel" for="project_id">%s: </label>',Messages::getString('General.Project'));
+	     	$result .= '<select name="project_id" id="project_id_selector" onchange="updateProjectInfo();">';
+	     	foreach ($this->frontpage_info as $id => $project) {
+	     	    $result .= sprintf('<option value="%03d" %s>%s&nbsp;&nbsp;</option>',$id,
+	     	        ($id == Config::$default_project_id ? 'selected="selected"' : ''),
+	     	        		$project->name);
+	     	}	
+	     	$result .= '</select><br/>';
+     	} else {
+     		foreach ($this->frontpage_info as $id => $project) {
+	     	    $result .= sprintf('<input type="hidden" name="project_id" value="%03d" %s />',$id);
+	     	}	
+     	}
      	$result .=	sprintf('<label class="startformlabel" for="mat_no">%s: </label><input type="text" name="mat_no" value="" size="10" class="startinput" /><br />',Messages::getString('General.MatNo')) .
      			sprintf('<label class="startformlabel" for="password">%s: </label><input type="password" name="password" value="" size="10" class="startinput" />&nbsp;',Messages::getString('General.Password')) .
      			sprintf('<input type="submit" value="%s" id="requestbutton" />',Messages::getString('StartPage.RequestResults')) .
