@@ -99,14 +99,6 @@
          
      }
      
-     private function renderError($error) {
-             $this->renderBackNote(sprintf('<div class="error">%s</div>',$error),Messages::getString('General.Error'));         
-     }
-     
-     protected function renderBackNote($text, $title = '', $date = '') {
-             parent::renderNote(sprintf('%s' .
-             		'<div class="back"><input type="button" value="%s" onclick="history.back();" /></div>',$text,Messages::getString('General.Back')),$title,$date);         
-     }
      private function getResultRequestForm() {
      	$result = '<div id="requestresults"><form method="POST" name="request_results_form" autocomplete="off">';
      	if (count($this->frontpage_info) > 1) {

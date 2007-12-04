@@ -95,12 +95,18 @@
       	'format' => 'A5',	  // A3, A4, A5, Letter, Legal      					
       );
      
-     // The number of results which can be entered simultaniously
-     public static $numberOfDataSetsToEnter = 15;
+      // The number of results which can be entered simultaniously
+      public static $numberOfDataSetsToEnter = 15;
      
-     
-      //As long as Res-on doesn't support multi-projects, this number needs to be set:
       public static $default_project_id = 1;
+      public static $master_password = "NewProject"; // overwrite in conf.local.php! 
+      
+      public static $default_project_info = array(
+      	'info' => '',
+      	'access' => true,
+      	'introduction'=>'Damit Sie online auf Ihr Klausursergebnis zugreifen k&ouml;nnen, schreiben Sie bitte Ihren pers&ouml;nlichen R-Key <b>%1$s</b> auf das Deckblatt Ihrer Klausur. Bitte <b>schreiben Sie das Passwort nicht auf die Klausur!</b>\r\n<br><hr>To enable the possibility to access your results online, please copy your personal R-Key <b>%1$s</b> to the cover page of your exam. Please <b>do not write your password anywhere on the exam</b>.\r\n<br>',
+      	'hint'=>'<br><i>Zu Ergebnisabfrage besuchen Sie bitte die Seite <b>%1$s</b> und geben Sie dort Ihre Matrikelnummer und das obige Passwort an.</i><br><hr><i>To access your results, please visit <b>%1$s</b> and enter your matriculation number and the password provided above</i>.\r\n<br><br><br><b>Information:</b> Mit dem &Uuml;bertragen des R-Keys auf Ihr Klausurdeckblatt stimmen Sie der verschl&uuml;sselten Speicherung Ihres Ergebnisses in einem EDV-System zu. Dieses Ergebnis kann online von jedem abgefragt werden, der Ihre Matrikelnummer sowie obiges Passwort kennt. Stimmen Sie diesem Vorgehen nicht zu, so ignorieren Sie bitte dieses Schreiben und vermerken Sie keinen R-Key auf Ihrer Klausur.\r\n<br><br><hr>\r\n<br><b>Information:</b> By copying your R-Key to your exam cover sheet, you agree, that your result will be stored encrypted in a database and is accessible online to everyone knowing your matriculation number and the password above. If you do not agree, just ignore this paper and do not copy the R-Key to your exam.'
+      );
      
       //Available languages:
       public static $languages = array(
@@ -108,6 +114,12 @@
                       'icon' => 'english_icon.gif'),
         'de' => array('name' => 'Deutsch',
                       'icon' => 'german_icon.gif')
+      );
+      
+      // This text is rendered on the bottom of each page
+      public static $disclaimer = array (
+      	'title'=> 'Important remark - Wichtiger Hinweis',
+      	'text' => '<b>Disclaimer:</b> All data is provided for informational purposes only and no responsibility is taken for the correctness of the information.<br /><br /><b>Haftungsausschluss:</b> Die hier angezeigten Daten dienen lediglich Informationszwecken. Alle Informationen ohne Gew&auml;hr.'
       );
  }
 

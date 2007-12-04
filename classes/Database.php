@@ -46,6 +46,9 @@
     }
     public function affectedRows() {
         return mysql_affected_rows($this->db_link);
+    }    
+    public function lastError() {
+    	return mysql_error($this->db_link);
     }
     
     /**
@@ -78,7 +81,6 @@
                            " WHERE project_id = $project_id" .
                            "   AND access_open = 'yes'",$this->db_link); 
         return mysql_fetch_assoc($res);
-     	
      }
      
      /** 
@@ -102,6 +104,36 @@
      					   " FROM " . $this->TABLES['projects'] . 
                            " WHERE project_id = $project_id",$this->db_link);
         return mysql_fetch_assoc($res);
+     }
+     
+     /**
+      * Updates an existing project or inserts a new one
+      * @return int id of affected project (false if error occured)
+      */
+     public function updateProject($project_info, $project_id = 0) {
+         $settings = array();
+         if (isset($project_info['pwd'])) 
+         	$settings[] = sprintf("project_pwd=PASSWORD('%s')",mysql_escape_string($project_info['pwd']));
+         
+         foreach (array("name"=>"project_name","info"=>"frontpage_info","introduction"=>"project_pdf_introduction","hint"=>"project_pdf_hint") as $id => $sql_id) {        	
+	         if (isset($project_info[$id])) 
+	         	$settings[] = sprintf("%s='%s'",$sql_id,mysql_escape_string($project_info[$id]));
+         }
+         
+         if (isset($project_info['access'])) 
+         	$settings[] = sprintf("access_open='%s'", $project_info['access'] ? 'yes' : 'no');
+         
+         
+         if (! $project_id) { // INSERT
+        	$query =  sprintf("INSERT INTO %s SET %s",$this->TABLES['projects'],join(",",$settings));
+         } else { //UPDATE
+     		$project_id = intval($project_id);
+        	$query =  sprintf("UPDATE %s SET %s WHERE project_id=%d",$this->TABLES['projects'],join(",",$settings),$project_id);
+         }
+         if (mysql_query($query,$this->db_link)) {
+         	return $project_id ? $project_id : mysql_insert_id($this->db_link);
+         } else
+         	return false;
      }
      
      /**

@@ -242,3 +242,18 @@ input#requestbutton {
    margin: -1em 0px 1em 30px;
  }
  
+#createproject label {
+  float:left;
+  clear:both;
+  display:block;
+  width:150px;
+}
+#createproject hr {
+	text-align:center;
+	width:40%;
+	margin:5px auto; 
+	border: 0px; /* Für Firefox und Opera */
+ 	border-top: solid 1px #808080;
+ 	border-bottom: transparent;
+}
+

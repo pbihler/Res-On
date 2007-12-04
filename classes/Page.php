@@ -83,7 +83,10 @@
 	     
          echo "    <div id=\"wrapperContent\">\n";
          $this->renderNotes();
-         $this->renderNote('<b>Disclaimer:</b> All data is provided for informational purposes only and no responsibility is taken for the correctness of the information.<br /><br /><b>Haftungsausschluss:</b> Die hier angezeigten Daten dienen lediglich Informationszwecken. Alle Informationen ohne Gew&auml;hr.','Important remark - Wichtiger Hinweis');
+         
+         // Show disclaimer
+         if (Config::$disclaimer['text'] || Config::$disclaimer['title'])
+         	$this->renderNote(Config::$disclaimer['text'],Config::$disclaimer['title']);
          echo "    </div>\n";
      }
      
@@ -197,6 +200,19 @@
           <?php echo $text; ?>
 		</p>
          <?php
+     }
+     
+     protected function renderError($error,$back = true) {
+     	$text = sprintf('<div class="error">%s</div>',$error);
+     	if ($back)
+             $this->renderBackNote($text,Messages::getString('General.Error'));         
+        else
+             $this->renderNote($text,Messages::getString('General.Error'));        
+     }
+     
+     protected function renderBackNote($text, $title = '') {
+             parent::renderNote(sprintf('%s' .
+             		'<div class="back"><input type="button" value="%s" onclick="history.back();" /></div>',$text,Messages::getString('General.Back')),$title);         
      }
       
  

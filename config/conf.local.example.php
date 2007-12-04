@@ -1,6 +1,6 @@
 <?php
 
-//Rename to "conf.local.php" to enable
+//Rename to "conf.local.php" to enable - details about the parameter are to be found in conf.php
 
 // Local configuration (overwrites defaults)
 //Config::$require_ssl = true;
@@ -16,3 +16,4 @@ Config::$database['password'] = 'j/fsOv2,';
 //Config::$pdf_settings['orientation'] = 'P';
 //Config::$pdf_settings['format'] = 'A5';
 //Config::$default_project_id = 1;
+Config::$master_password = "CreateProjectPassword";
