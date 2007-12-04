@@ -86,7 +86,7 @@
  	    
  	}
  	
- 	private function renderError($pdf,$error) {
+ 	protected function renderError($pdf,$error) {
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','B',16);
 		$pdf->SetTextColor(255,0,0);
