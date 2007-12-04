@@ -14,7 +14,7 @@
 // Local configuration (overwrites defaults)
 //Config::$require_ssl = true;
 //Config::$default_crypt_module = "gpg";
-Config::$crypt_info['hash']['salt'] = '$2$kd(jmlokDK8kl'; //Change this
+Config::$crypt_info['hash']['salt'] = '$2$kd(jmlokDK8kl'; //Change this (length: 16 characters, starting wit "$2$")
 //Config::$crypt_info['gpg']['program_path'] = '/usr/bin/gpg';
 //Config::$database['server'] = '';
 Config::$database['username'] = 'reson_access';
