@@ -1,6 +1,15 @@
 <?php
-
-//Rename to "conf.local.php" to enable - details about the parameter are to be found in conf.php
+/**
+ * 
+ * Rename to "conf.local.php" to enable - details about the parameter are to be found in conf.php
+ * 
+ * WARNING:
+ * 
+ * Please make sure, that this file can only be read by the webserver,
+ * and that the directory containing this file contains a .htaccess
+ * denying web-access to it!
+ * 
+ */
 
 // Local configuration (overwrites defaults)
 //Config::$require_ssl = true;

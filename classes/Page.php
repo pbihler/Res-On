@@ -211,7 +211,7 @@
      }
      
      protected function renderBackNote($text, $title = '') {
-             parent::renderNote(sprintf('%s' .
+             $this->renderNote(sprintf('%s' .
              		'<div class="back"><input type="button" value="%s" onclick="history.back();" /></div>',$text,Messages::getString('General.Back')),$title);         
      }
       
