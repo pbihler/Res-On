@@ -44,7 +44,7 @@
       	
         $available_languages = array_keys(Config::$languages);
         
-        if (($selected_lang = $_GET['l']) && (in_array($selected_lang,$available_languages))) {
+        if (isset($_GET['l']) && ($selected_lang = $_GET['l']) && (in_array($selected_lang,$available_languages))) {
         	// Take language selected via GET
         	setcookie('language',$selected_lang,0,'/',null,Config::$require_ssl);
         } elseif (($selected_lang = $_COOKIE['language']) && (in_array($selected_lang,$available_languages))) {
@@ -215,6 +215,18 @@
              		'<div class="back"><input type="button" value="%s" onclick="history.back();" /></div>',$text,Messages::getString('General.Back')),$title);         
      }
       
+      
+     
+     /**
+      * To access a value (from POST) if set
+      */
+     protected function postValue($name,$index = null,$default ='') {
+         if (isset($_POST[$name]) && ($index === null || isset($_POST[$name][$index]))) {
+             return ($index === null) ? $_POST[$name] : $_POST[$name][$index];
+         } else {
+             return $default;
+         }
+     }
  
  }
  

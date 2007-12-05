@@ -101,9 +101,9 @@
              $isIgnorable = isset($_POST['ignore'][$i]);
              
              $result .= sprintf('<tr%s id="set_%d">',$hasRemark ? sprintf(' class="%s"', $isIgnorable ? 'warning' : 'error') : '',$i);
-             $result .= sprintf('<td nowrap="nowrap">%03d&ndash;<input type="text" name="key[%d]" id="key[%d]" value="%s" size="10" maxlength="10" onchange="remIgnore(%1$d)" /></td>',$this->project->getId(),$i,$i,$this->postValue('key',$i));
-             $result .= sprintf('<td><input type="text" name="mat_no[%d]" id="mat_no[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$i,$this->postValue('mat_no',$i));
-             $result .= sprintf('<td><input type="text" name="data[%d]" id="data[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$i,$this->postValue('data',$i));
+             $result .= sprintf('<td nowrap="nowrap">%03d&ndash;<input type="text" name="key[%d]" id="key[%d]" value="%s" size="10" maxlength="10" onchange="remIgnore(%1$d)" /></td>',$this->project->getId(),$i,$i,htmlspecialchars($this->postValue('key',$i)));
+             $result .= sprintf('<td><input type="text" name="mat_no[%d]" id="mat_no[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$i,htmlspecialchars($this->postValue('mat_no',$i)));
+             $result .= sprintf('<td><input type="text" name="data[%d]" id="data[%d]" value="%s" size="10" onchange="remIgnore(%1$d)" /></td>',$i,$i,htmlspecialchars($this->postValue('data',$i)));
              
              $result .= sprintf('<td id="remark_%d">',$i);
              if ($hasRemark) {
@@ -264,17 +264,6 @@
      
      
      
-     
-     /**
-      * To access a value (from POST) if set
-      */
-     private function postValue($name,$index = null,$default ='') {
-         if (isset($_POST[$name]) && ($index === null || isset($_POST[$name][$index]))) {
-             return ($index === null) ? $_POST[$name] : $_POST[$name][$index];
-         } else {
-             return $default;
-         }
-     }
      
      
      

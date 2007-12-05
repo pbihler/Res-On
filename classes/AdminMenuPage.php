@@ -16,9 +16,10 @@
          
  	     $this->option_list = array('generate_keys.php' => Messages::getString('AdminMenuPage.GenerateNewKeys'),
  	                              'enter_data.php' => Messages::getString('AdminMenuPage.EnterResults'),
+ 	                              'manage_project.php' => Messages::getString('ManageProjectPage.ManageProject'),
  	                             'logout.php' => Messages::getString('AdminMenuPage.Logout'));
  	                             
-         $this->setTitle(sprintf(Messages::getString('AdminMenuPage.Title'), $this->project->getName(),$this->project->getId()));
+         $this->setTitle(sprintf(Messages::getString('AdminMenuPage.Title'), $this->project->getName()));
      }
      
      function renderNotes() {

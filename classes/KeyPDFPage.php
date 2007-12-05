@@ -12,13 +12,12 @@
  class KeyPDFPage extends AdminPage {
      
      
-    private $pdfTexts = array();
     private $url = '';
+    protected $introduction= '';
+    protected $hint = '';
     
     function __construct() {        
          parent::__construct();
-         $db = Database::getInstance();
-		 $this->pdfTexts = $db->getProjectPdfTexts($this->project->getId());
 		 
 		 //Construct access URL:
 		 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on")
@@ -27,8 +26,25 @@
 		 	$this->url = 'http://';
 		 $PHP_SELF = $_SERVER['PHP_SELF'];
 		 $this->url .= $_SERVER['HTTP_HOST'] . substr($PHP_SELF,0,strrpos($PHP_SELF,'/'));
+		 
+		 $this->introduction = $this->project->getIntroduction();
+		 if (isset($_POST['introduction'])) 
+		    $this->introduction = stripslashes($_POST['introduction']);		    
+		    
+		 $this->hint = $this->project->getHint();
+		 if (isset($_POST['hint'])) 
+		    $this->hint = stripslashes($_POST['hint']);
     }
-     
+    
+    /**
+     * Replaces variables in the string
+     */
+    private function replaceVariables($s,$key,$pwd) {
+    	return preg_replace(array("/%RKEY%/i","/%PASSWORD%/i","/%URL%/i","/%PROJECT%/i"),
+    	                  array($key,$pwd,$this->url,$this->project->getName()),
+    	                  $s);
+    }
+    
       /**
        * Overwrites render to generate PDF output
        */
@@ -51,7 +67,9 @@
 		    $pwds = $_POST['pwd'];
 		    if (count($keys) > 0 && count($keys) == count($pwds)) {
 		        for ($i = 0; $i < count($keys); $i++) {
-		            $this->AddCredentialPage($pdf,$keys[$i],$pwds[$i]);
+		 			$introduction = $this->replaceVariables($this->introduction,$keys[$i],$pwds[$i]);
+		 			$hint = $this->replaceVariables($this->hint,$keys[$i],$pwds[$i]);
+		            $this->AddCredentialPage($pdf,$keys[$i],$pwds[$i],$introduction,$hint);
 		        }		    
 		        return;
 		    }
@@ -59,7 +77,7 @@
 		$this->renderError($pdf,Messages::getString('KeyPDFPage.NoValidCredentials'));	    
  	}
  	
- 	private function AddCredentialPage($pdf,$key,$pwd) {
+ 	private function AddCredentialPage($pdf,$key,$pwd,$introduction,$hint) {
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','B',14);
 		$pdf->Cell(0,18,html_entity_decode(Messages::getString('KeyPDFpage.Credentials')),0,1); 
@@ -67,7 +85,7 @@
 		
 		$pdf->SetFont('Arial','',10);
 		$pdf->Ln();
-		$pdf->WriteHTML(0,14,sprintf($this->pdfTexts['introduction'],$key)); 		
+		$pdf->WriteHTML(0,14,$introduction); 		
 		$pdf->Ln();
 		
 		$pdf->Ln();
@@ -81,7 +99,7 @@
 		
 		$pdf->SetFont('Arial','',10);
 		$pdf->Ln();
-		$pdf->WriteHTML(0,14,sprintf($this->pdfTexts['hint'],$this->url)); 		
+		$pdf->WriteHTML(0,14,$hint); 		
 		$pdf->Ln();
  	    
  	}

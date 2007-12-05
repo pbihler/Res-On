@@ -11,6 +11,7 @@
  	
  	private $error = '';
  	private $new_project_id=0;
+ 	private $SUCCESS_REDIRECT_PAGE = "manage_project.php";
  	
  	
      function __construct() {
@@ -23,7 +24,7 @@
          	$this->error = $this->processForm();
          	if (! $this->error) {
 	 			$session = Session::createNewSession($_POST['pwd'],$this->new_project_id);
-	 			header("Location: admin.php");  //Redirect to admin menu, if succeeded
+	 			header("Location: " . $this->SUCCESS_REDIRECT_PAGE);  //Redirect to settings menu, if succeeded
          	} 
          	
          }
@@ -49,7 +50,7 @@
 	                               'access' => Config::$default_project_info['access'],
 	                               'introduction' => Config::$default_project_info['introduction'],
 	                               'hint' => Config::$default_project_info['hint']);
-	          if (! $this->new_project_id = $db->updateProject($project_info)) 
+	          if (! $this->new_project_id = $db->insertProject($project_info)) 
 	             return sprintf("%s: %s",Messages::getString('General.dbError'),$db->lastError());
 	     } catch (Exception $exception){ // in this case, render exception as error.
 			 return $exception;
@@ -69,7 +70,7 @@
      	$result = '<div id="createproject"><form method="POST" name="createproject_form" autocomplete="off">';
      	
      	$result .= sprintf('<label for="name">%s: </label><input type="text" size="30" name="name" value="%s" /><br />',
-     	                     Messages::getString('CreateProjectPage.ProjectName'),$_POST['name']);
+     	                     Messages::getString('CreateProjectPage.ProjectName'),htmlspecialchars($_POST['name']));
      	                     
      	$result .= sprintf('<label for="pwd">%s: </label><input type="password" size="30" name="pwd" value="" /><br />',
      	                     Messages::getString('General.Password'));     	                     

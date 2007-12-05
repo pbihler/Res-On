@@ -46,7 +46,7 @@
          
          try {
             //Now generate the key
-            echo sprintf(Messages::getString('GenKeyPage.Generating'),$current,$max);
+            echo sprintf("&nbsp;&nbsp;&nbsp;&nbsp;" . Messages::getString('GenKeyPage.Generating'),$current,$max);
             flush();
             
             $db = Database::getInstance();

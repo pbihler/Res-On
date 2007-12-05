@@ -55,21 +55,38 @@
      * Project-Related functions
      */
     
-     public function getProjectInfo($project_id,$password) {
+     public function getProjectInfo($project_id,$password = '') {
      	$project_id = intval($project_id);
      	$res = mysql_query("SELECT *" .
      					   " FROM " . $this->TABLES['projects'] . 
                            " WHERE project_id = $project_id" . 
-                           " AND project_pwd = PASSWORD('$password')",$this->db_link); 
+                           ($password ? " AND project_pwd = PASSWORD('$password')" : ""),$this->db_link); 
         return mysql_fetch_assoc($res);
      }
      
-     public function setProjectName($project_id,$name) {
+     public function setProjectString($project_id,$name,$value) {
      	$project_id = intval($project_id);
      	$name = mysql_escape_string($name);
-     	return mysql_query("UPDATE " . $this->TABLES['projects'] . 
-     	                   " SET project_name = '$name'" .
+     	$value = mysql_escape_string($value);
+     	mysql_query("UPDATE " . $this->TABLES['projects'] . 
+     	                   " SET $name = '$value'" .
      	                   " WHERE project_id = $project_id",$this->db_link);
+     	                   
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	  
+     	return true;
+     }
+     public function setProjectPassword($project_id,$password) {
+     	$project_id = intval($project_id);
+     	$password = mysql_escape_string($password);
+     	mysql_query("UPDATE " . $this->TABLES['projects'] . 
+     	                   " SET project_pwd = PASSWORD('$password')" .
+     	                   " WHERE project_id = $project_id",$this->db_link);
+     	                   
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	return true;
      }
      
      /*
@@ -97,20 +114,11 @@
         return $result;
      }
      
-     
-     public function getProjectPdfTexts($project_id) {
-     	$project_id = intval($project_id);
-         $res = mysql_query("SELECT project_pdf_introduction as introduction, project_pdf_hint as hint" .
-     					   " FROM " . $this->TABLES['projects'] . 
-                           " WHERE project_id = $project_id",$this->db_link);
-        return mysql_fetch_assoc($res);
-     }
-     
      /**
-      * Updates an existing project or inserts a new one
+      * inserts a new project
       * @return int id of affected project (false if error occured)
       */
-     public function updateProject($project_info, $project_id = 0) {
+     public function insertProject($project_info) {
          $settings = array();
          if (isset($project_info['pwd'])) 
          	$settings[] = sprintf("project_pwd=PASSWORD('%s')",mysql_escape_string($project_info['pwd']));
@@ -123,15 +131,10 @@
          if (isset($project_info['access'])) 
          	$settings[] = sprintf("access_open='%s'", $project_info['access'] ? 'yes' : 'no');
          
-         
-         if (! $project_id) { // INSERT
-        	$query =  sprintf("INSERT INTO %s SET %s",$this->TABLES['projects'],join(",",$settings));
-         } else { //UPDATE
-     		$project_id = intval($project_id);
-        	$query =  sprintf("UPDATE %s SET %s WHERE project_id=%d",$this->TABLES['projects'],join(",",$settings),$project_id);
-         }
+         $query =  sprintf("INSERT INTO %s SET %s",$this->TABLES['projects'],join(",",$settings));
+       
          if (mysql_query($query,$this->db_link)) {
-         	return $project_id ? $project_id : mysql_insert_id($this->db_link);
+         	return mysql_insert_id($this->db_link);
          } else
          	return false;
      }
@@ -163,11 +166,14 @@
      	$member_id = intval($member_id);
      	$crypt_module = mysql_escape_string($crypt_module);
      	$crypt_data = mysql_escape_string($crypt_data);
-     	return mysql_query("INSERT INTO " . $this->TABLES['results'] . 
+     	mysql_query("INSERT INTO " . $this->TABLES['results'] . 
      	                   " SET project_id = $project_id," .
      	                   "     member_id = $member_id," .
      	                   "     crypt_module = '$crypt_module'," .
      	                   "     crypt_data = '$crypt_data'" ,$this->db_link);
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	return true;
      }
      
      public function getResultDataByRKey($rkey) {
@@ -205,7 +211,9 @@
          				   "     result = '$result' " . 
                            " WHERE project_id = $project_id" .
                            "   AND member_id = $member_id",$this->db_link); 
-        return;
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	return true;
      }
  }
  
