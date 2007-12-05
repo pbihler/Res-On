@@ -1,7 +1,7 @@
 <?php
 /*
  * The main config holds all parameters for the current instance of Res-On.
- * Do not modify this file directly, but overwrite the configration values in the file "conf.local.php"
+ * Do not modify this file directly, but overwrite the configuration values in the file "local.php"
  * 
  * WARNING:
  * 

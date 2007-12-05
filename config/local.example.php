@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * Rename to "conf.local.php" to enable - details about the parameter are to be found in conf.php
+ * Rename this file to "local.php" to enable - details about the parameter are to be found in conf.php
  * 
  * WARNING:
  * 
