@@ -33,7 +33,7 @@ Installation
 
   # Extract the content of the archive to a directory of your webserver, which is
     accessible via http(s) from the outside (e.g. via http://www.example.com/reson).
-    If you're updateing from an older version of Res-On, just extract the archive
+    If you're updating from an older version of Res-On, just extract the archive
     content over the old installation.
     
   # Make sure, that the webserver's user can write into the subdirectories "config" 
@@ -42,8 +42,8 @@ Installation
   # Call the "setup.php" page (e.g. http://www.example.com/reson/setup.php). This page
     helps with the initial installation setup, as well as later configurations.
     
-    # The master passwort is required to protect your setup - do not forget!
-    # To disable GPG encryption, just leave the path to the executeable empty.
+    # The master password is required to protect your setup - do not forget!
+    # To disable GPG encryption, just leave the path to the executable empty.
       If you want to use GPG encryption, please notice the remarks below.
       
   # On the next page, you can add a new project/exam. To repeat this step later
@@ -54,6 +54,10 @@ Installation
   
   # Now, make sure that only the webserver (and no other user) can read the files in
     the "config" subdir - you may even want to make it write-protected.
+    
+  # If you want to reset your master password, open the file config/local.php
+    in any editor and remove the line stating Config::$master_password = '...';
+    Then, visit immediately the setup-page to set a new master password.
   
 
 Small User Guide
@@ -63,10 +67,10 @@ Small User Guide
   
      # During the exam, she receives an extra sheet containing an personal R-Key 
        and a password.
-     # She copies the R-Key (as well as her student id/matrikulation number)
-       to the examen's cover sheet and takes the passwort sheet with her.
+     # She copies the R-Key (as well as her student id/matriculation number)
+       to the examen's cover sheet and takes the password sheet with her.
      # After some days, she visits http://www.example.com/reson, enters her
-       matriculation number/student id and the passwort and enjoys her result.
+       matriculation number/student id and the password and enjoys her result.
   
   * Teacher's story:
   
@@ -79,7 +83,7 @@ Small User Guide
       a field named "R-Key:" is prepared.
     # After the grading of the exam, the teacher visits the admin-page again to
       enter the data into the database by providing R-Key, student id/matriculation 
-      number and a result-string for each stduent (e.g. by CVS import from an excel
+      number and a result-string for each student (e.g. by CVS import from an excel
       sheet)
 
 GPG Remarks

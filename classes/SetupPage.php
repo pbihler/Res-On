@@ -120,10 +120,10 @@
      	if (! $using_ssl) {
      		$result .= sprintf(Messages::getString('SetupPage.VisitWithSSLtoSet'),"https://". $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
      	} 
-     	$result .= sprintf('<label for="general[contact]">%s: </label><input type="text" size="30" name="general[contact]" value="%s" /><br />',
+     	$result .= sprintf('<br /><label for="general[contact]">%s: </label><input type="text" size="30" name="general[contact]" value="%s" /><br />',
      	                     Messages::getString('SetupPage.ContactUrl'),$this->postValue('general','contact',Config::$contact_url)); 
      	
-     	$result .= '<br /><hr />';
+     	$result .= '<hr />';
      	
      	$result .= sprintf('<h4>%s</h4>',Messages::getString('SetupPage.DatabaseSettings'));
      	$result .= sprintf('<label for="db[server]">%s: </label><input type="text" size="30" name="db[server]" value="%s" /><br />',
