@@ -275,5 +275,8 @@ input#pdfpreviewbutton {
    margin: -7em 0px 7em 20px;
  }
  
+select {
+	min-width:100px;
+}
  
 

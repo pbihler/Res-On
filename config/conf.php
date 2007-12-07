@@ -56,7 +56,7 @@
         ),
          // The following information is used when crypt_module is set to "gpg"
       	'gpg' => array(
-          'program_path' => 'c:\Program Files\GNU\GnuPG\gpg.exe', //Set the path to gpg executeable
+          'program_path' => '', //Set the path to gpg executeable
           'keyring_home' => 'keys/%03d', // the subdir has to be writeable by the webserver
           'key_type'     => 'DSA', //  type of the key, the allowed values are DSA and RSA
           'key_length'   => 512, // Length of the key in bits
@@ -100,7 +100,8 @@
       public static $numberOfDataSetsToEnter = 15;
      
       public static $default_project_id = 1;
-      public static $master_password = "NewProject"; // overwrite in conf.local.php! 
+      public static $master_salt = '';
+      public static $master_password = ''; // overwrite in conf.local.php! 
       
       public static $default_project_info = array(
       	'info' => '',
