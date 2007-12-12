@@ -28,7 +28,7 @@ class PasswordGenerator
 	 
 	public function generatePassword( 
 	$number_of_chars = 12, $include_number = 1, 
-	$include_lower_letter=1, $include_upper_letter=1 )
+	$include_lower_letter=1, $include_upper_letter=1, $exclude_list = array() )
 	{
 	
 	    //init password
@@ -88,7 +88,7 @@ class PasswordGenerator
 	            }
 	        }
 	
-	        if( $character != '' )
+	        if( $character != '' && ! in_array($character,$exclude_list))
 	        {
 	            $pswd .= $character;
 	        }

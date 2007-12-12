@@ -71,7 +71,8 @@
       	'length' => 8,
       	'includeNumbers' => 1,
       	'includeLowerLetters' => 1,      	
-      	'includeUpperLetters' => 1
+      	'includeUpperLetters' => 1,
+      	'excludeList' => array('l','0') // excludes due to high similarities
       );
       
       /*

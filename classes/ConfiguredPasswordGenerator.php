@@ -18,7 +18,8 @@
  	    return $this->generator->generatePassword(Config::$pwd_gen_params['length'],
  	    		        						  Config::$pwd_gen_params['includeNumbers'],
  	    				       				      Config::$pwd_gen_params['includeLowerLetters'],
- 	    								          Config::$pwd_gen_params['includeUpperLetters']);
+ 	    								          Config::$pwd_gen_params['includeUpperLetters'],
+ 	    								          Config::$pwd_gen_params['excludeList']);
  	 }
      
  }
