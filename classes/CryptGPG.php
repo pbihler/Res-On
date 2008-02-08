@@ -28,9 +28,6 @@
         if (! file_exists($keyring_home))
         	mkdir($keyring_home);
         	
-        // Create keyrings
-        if (! file_exists("$keysing_home/secring.gpg") || ! file_exists("$keysing_home/pubring.gpg"))
-        
         $this->gpg = new gnuPG(Config::$crypt_info['gpg']['program_path'], $keyring_home);
  	}
      

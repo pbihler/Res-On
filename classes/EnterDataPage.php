@@ -173,15 +173,7 @@
                 unset($_POST['ignore'][$i]);
                 continue;
             }
-            
-            $current_data = $this->db->getResultDataByRKey($rkey);
-            if (! $current_data) {
-                $this->remark[$i] = Messages::getString('EnterDataPage.RKeyNotFound');
-                $commitData = false; //Fatal Error
-                unset($_POST['ignore'][$i]);
-                continue;
-            }
-             
+         
             // check the Mat-No
             if (! $mat_nos[$i]) {
                 $this->remark[$i] = Messages::getString('EnterDataPage.NoMatNo');
@@ -198,19 +190,33 @@
                 continue;
             }
             
-            // mat used with other rkey?
-            $alt_data = $this->db->getResultDataByMatNo($rkey->getProjectId(),$mat_no,$rkey->getMemberId());
-            if ($alt_data) {
-                $alt_rkey = new RKey($alt_data['project_id'],$alt_data['member_id']);
-                $this->remark[$i] .= sprintf(Messages::getString('EnterDataPage.MatNoAlreadyUsedRKey'),$alt_rkey);
+            // Verify for current data
+            $current_data = $this->db->getResultDataByRKey($rkey);
+            if (! $current_data ) {
+            	$current_data = $this->db->getResultDataByMatNo($rkey->getProjectId(),$mat_no);
+            }
+            if (! $current_data) {
+                $this->remark[$i] = Messages::getString('EnterDataPage.RKeyNotFound');
                 $commitData = false; //Fatal Error
                 unset($_POST['ignore'][$i]);
                 continue;
             }
+             
+            
+            // mat used with other rkey?
+            if ($current_data['member_id']) {
+	            $alt_data = $this->db->getResultDataByMatNo($rkey->getProjectId(),$mat_no,$current_data['member_id']);
+	            if ($alt_data) {
+	                $this->remark[$i] .= sprintf(Messages::getString('EnterDataPage.MatNoAlreadyUsed'),$mat_no);
+	                $commitData = false; //Fatal Error
+	                unset($_POST['ignore'][$i]);
+	                continue;
+	            }
+            }
             
             // Now go for warnings:
             
-            // mat_no used?
+            // rkey already used? (this test will get obsolete)
             if ($current_data['mat_no'] && $current_data['mat_no'] != $mat_no) {
                 $this->remark[$i] .= sprintf(Messages::getString('EnterDataPage.RKeyAlreadyUsedMatNo'),$current_data['mat_no']);
                 if (! $this->postValue('ignore',$i,null)) {
@@ -241,10 +247,17 @@
             if (! $this->remark[$i] || $this->postValue('ignore',$i,null)) {
                 
                 // encrypt data:
-                $crypt = new CryptProxy($current_data['crypt_module'], $this->project->getId(),$rkey->getMemberId());
+                $crypt = new CryptProxy($current_data['crypt_module'], $this->project->getId(),$current_data['member_id']);
                 $crypted_date = $crypt->encryptResult($date,$current_data['crypt_data']);
                 // Save data to database
-                $this->db->updateResultData($rkey,$mat_no,$crypted_date);
+                try {
+                	$this->db->updateResultData($current_data['project_id'],$current_data['member_id'],$mat_no,$crypted_date);
+                } catch (Exception $exception) {
+                    $this->remark[$i] = $exception;
+	                $commitData = false; //Fatal Error
+	                unset($_POST['ignore'][$i]);
+	                continue;
+                }
                 $this->storeResult++;
             }
             

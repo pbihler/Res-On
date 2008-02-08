@@ -143,13 +143,27 @@
       * Management of Results
       */
       
+    /*
+     * Returns a currently unused member ID - hopefully terminates once :)
+     */
      public function getNextMemberId($project_id) {
      	$project_id = intval($project_id);
-     	$resource = mysql_query("SELECT MAX(member_id) AS id" .
-     			           " FROM " . $this->TABLES['results'] . 
-     	                   " WHERE project_id = $project_id",$this->db_link);
-     	$result = mysql_fetch_assoc($resource);
-     	return $result['id'] + 1;
+     	
+     	$count = $this->getMemberIdCount();
+     	
+     	while (true) {
+	     	if ($count < 10000)
+	     	    $id = rand(1,99999);
+	     	else
+	     	    $id = rand($count,$count*10);
+	     	    
+	     	$resource = mysql_query("SELECT member_id AS id" .
+	     			           " FROM " . $this->TABLES['results'] . 
+	     	                   " WHERE project_id = $project_id
+	     	                     AND member_id = $id",$this->db_link);
+     	    if (mysql_num_rows == 0) // not used!
+     	       return $id;
+     	}
      }
      
      public function getMemberIdCount($project_id) {
@@ -196,21 +210,29 @@
                            " WHERE project_id = $project_id" .
                            "   AND mat_no = '$mat_no'" . 
                            ($ignore_member_id ? 
-                              " AND NOT member_id = $ignore_member_id" :
+                              " AND (NOT member_id = $ignore_member_id OR member_id IS NULL)" :
                               ""),$this->db_link); 
         return mysql_fetch_assoc($res);
      }
      
-     public function updateResultData($rkey,$mat_no,$result) {
-     	$project_id = intval($rkey->getProjectId());
-     	$member_id = intval($rkey->getMemberId());
+     public function updateResultData($project_id,$member_id,$mat_no,$result) {
+     	$project_id = intval($project_id);
+     	$member_id = intval($member_id);
      	$mat_no = mysql_escape_string($mat_no);
      	$result = mysql_escape_string($result);
-         $res = mysql_query("UPDATE " . $this->TABLES['results'] .
-         				   " SET mat_no = '$mat_no'," .
+     	if ($member_id) {
+          $res = mysql_query("UPDATE " . $this->TABLES['results'] .
+         				   " SET member_id = NULL, " .
+         				   "     mat_no = '$mat_no'," .
          				   "     result = '$result' " . 
                            " WHERE project_id = $project_id" .
                            "   AND member_id = $member_id",$this->db_link); 
+     	} else {
+          $res = mysql_query("UPDATE " . $this->TABLES['results'] .
+         				   " SET result = '$result' " . 
+                           " WHERE project_id = $project_id" .
+                           "   AND mat_no ='$mat_no'",$this->db_link);      	
+     	}
      	if (mysql_errno($this->db_link) != 0) 
      	  throw new DatabaseException(mysql_error($this->db_link));
      	return true;

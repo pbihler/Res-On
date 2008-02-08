@@ -286,7 +286,9 @@
       	 		return sprintf(Messages::getString('SetupPage.CouldNotConnectToDatabase'),$dbname,mysql_error());
       	 } else {
       	 	if (! mysql_query(sprintf('CREATE DATABASE `%s`',$dbname),$db)) 
-      	 		return sprintf(Messages::getString('SetupPage.CouldNotCreateDatabase'),$dbname,mysql_error()); 
+      	 		return sprintf(Messages::getString('SetupPage.CouldNotCreateDatabase'),$dbname,mysql_error());
+      	 	if (! mysql_select_db($dbname,$db)) 
+      	 		return sprintf(Messages::getString('SetupPage.CouldNotConnectToDatabase'),$dbname,mysql_error()); 
       	 }
       	 
       	 //Create tables
@@ -300,10 +302,11 @@
       	                                                     'project_pdf_introduction' => 'longtext',
       	                                                     'project_pdf_hint' => 'longtext')),
                          'results' => array('init' => '`project_id` int(11) NOT NULL,' .
-                         		                      '`member_id` int(11) NOT NULL,' .
+                         		                      '`member_id` int(11) default NULL,' .
                          		                      '`mat_no` varchar(255) default NULL,' .
                          		                      '`result` text,' .
-                         		                      'PRIMARY KEY  (`project_id`,`member_id`),' .
+                         		                      'UNIQUE KEY `unique_member` (`project_id`,`member_id`),' .
+                                                      'UNIQUE KEY `unique_mat_no` (`project_id`,`mat_no`),' .
                          		                      'KEY `mat_no` (`mat_no`)',
       	                                     'cols' => array('crypt_module' => "varchar(10)NOT NULL default 'hash'",
       	                                                     'crypt_data' => 'text')));
@@ -324,6 +327,50 @@
       	 		}      	 		
       	 	}      	 	
       	 }
+      	 
+      	 // Index Migration from 0.4 db -> 0.5:
+      	 $tname = "results";
+	     if (! mysql_query(sprintf('ALTER TABLE `%s` CHANGE `member_id` `member_id` INT(11) NULL DEFAULT NULL ',$tname)))
+	      	 return sprintf(Messages::getString('SetupPage.CouldNotAlterTable'),$tname,mysql_error());
+	      	 
+	     if(mysql_num_rows(mysql_query(sprintf("SHOW INDEX FROM %s WHERE Key_name = 'PRIMARY'",$tname),$db))==2) { 	 
+		     if (! mysql_query(sprintf('ALTER TABLE `%s` DROP PRIMARY KEY',$tname)))
+		      	 return sprintf(Messages::getString('SetupPage.CouldNotAlterTable'),$tname,mysql_error());
+	     }
+	     
+	     $UNIQUES = array('unique_member' => array('project_id','member_id'),
+	                      'unique_mat_no' => array('project_id','mat_no'));
+	     foreach ($UNIQUES as $iname => $icols) {
+	         $res = mysql_query(sprintf("SHOW INDEX FROM %s WHERE Key_name = '%s'",$tname,$iname),$db);
+	         //check if index is all right:
+	         $drop_index = true;
+	         $num_rows = mysql_num_rows($res);
+	         if ($num_rows == 0) {
+	             $drop_index = false;
+	         } else {
+	             if ($num_rows == count($icols)) {
+	                //check index elements
+	                $elements_all_right = true;
+	             	while ($row = mysql_fetch_array($res, MYSQL_ASSOC)) {
+					    if (! in_array($row['Key_name'],$icols)) {  
+					       // Wrong index element => Renew it
+					       $elements_all_right = false;
+					       break;
+					    }
+					}
+					if ($elements_all_right) // index seems to be okay => continue with next index;
+					    continue;
+	             }
+	         }
+	         if ($drop_index) {
+		         if (! mysql_query(sprintf('ALTER TABLE `%s` DROP INDEX `%s`',$tname,$iname)))
+			      	 return sprintf(Messages::getString('SetupPage.CouldNotAlterTable'),$tname,mysql_error());
+	         }
+	         if (! mysql_query(sprintf('ALTER TABLE `%s` ADD UNIQUE `%s` (%s)',$tname,$iname,join(', ',$icols))))
+		      	 return sprintf(Messages::getString('SetupPage.CouldNotAlterTable'),$tname,mysql_error());
+	         
+	     }
+	     
       	 
       	 // OK, everything seems to be fine, so lets store these config values:
       	 
