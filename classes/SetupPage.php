@@ -81,7 +81,7 @@
       * Asks for Master password
       */
      private function getMasterPasswordForm() {
-     	$result = '<div id="createproject"><form method="POST" name="createproject_form" autocomplete="off">';   
+     	$result = '<div id="createproject" class="formlayout"><form method="POST" name="createproject_form" autocomplete="off">';   
      	$result .= sprintf('<label for="master_pwd">%s: </label><input type="password" size="30" name="master_pwd" value="" /> ',
      	                     Messages::getString('CreateProjectPage.CreateProjectPassword')); 
      	                     
@@ -97,7 +97,7 @@
       * The setup form
       */
      private function getSetupForm() {
-     	$result = '<div id="createproject"><form method="POST" name="createproject_form" autocomplete="off" onsubmit="return checkForm();">';
+     	$result = '<div id="createproject" style="formlayout"><form method="POST" name="createproject_form" autocomplete="off" onsubmit="return checkForm();">';
      	
      	
      	$result .= sprintf('<h4>%s</h4>',Messages::getString('SetupPage.GeneralSettings'));  
@@ -329,7 +329,7 @@
       	 }
       	 
       	 // Index Migration from 0.4 db -> 0.5:
-      	 $tname = "results";
+      	 $tname = $table_prefix . "results";
 	     if (! mysql_query(sprintf('ALTER TABLE `%s` CHANGE `member_id` `member_id` INT(11) NULL DEFAULT NULL ',$tname)))
 	      	 return sprintf(Messages::getString('SetupPage.CouldNotAlterTable'),$tname,mysql_error());
 	      	 
@@ -368,8 +368,11 @@
 	         }
 	         if (! mysql_query(sprintf('ALTER TABLE `%s` ADD UNIQUE `%s` (%s)',$tname,$iname,join(', ',$icols))))
 		      	 return sprintf(Messages::getString('SetupPage.CouldNotAlterTable'),$tname,mysql_error());
-	         
 	     }
+	     
+	     //Lift database to new (> 0.4) security standard (= dont save member_id AND mat.number AND result the same time):
+      	 $tname = $table_prefix . "results";
+	     mysql_query(sprintf('UPDATE `%s` SET `member_id` = NULL WHERE `mat_no` IS NOT NULL AND `result` IS NOT NULL',$tname));
 	     
       	 
       	 // OK, everything seems to be fine, so lets store these config values:

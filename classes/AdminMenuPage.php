@@ -25,7 +25,7 @@
      function renderNotes() {
      	
          $db = Database::getInstance();
-         $note = sprintf(Messages::getString('AdminMenuPage.Status'),$db->getMemberIdCount($this->project->getId()),$this->project->getName());
+         $note = sprintf(Messages::getString('AdminMenuPage.Status'),$db->getMemberIdCount($this->project->getId()),$db->getUsedMemberIdCount($this->project->getId()),$this->project->getName());
          $note .= '<ul>';
          foreach ($this->option_list as $file => $caption)
              $note .= '<li><a href="' . $file . '">' . $caption . '</a></li>';

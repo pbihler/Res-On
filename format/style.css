@@ -252,13 +252,13 @@ input#requestbutton {
    margin: -1em 0px 1em 30px;
  }
  
-#createproject label {
+.formlayout label {
   float:left;
   clear:both;
   display:block;
   width:150px;
 }
-#createproject hr {
+.formlayout hr {
 	text-align:center;
 	width:40%;
 	margin:5px auto; 

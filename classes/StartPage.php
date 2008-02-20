@@ -10,18 +10,24 @@
  class StartPage extends Page {
  	
  	private $frontpage_info = array();
+ 	private $default_project_id = 0;
  	private $error = '';
  	
      function __construct() {
          parent::__construct();
          $this->setTitle(Messages::getString('StartPage.Title'));
          $this->menu = array(Messages::getString('General.Admin')=>"admin.php") + $this->menu; 
+         $this->default_project_id = Config::$default_project_id;
          
          try {
 	         $db = Database::getInstance();         
 	         $this->frontpage_info = $db->getFrontpageInfo();
-	         if ($this->frontpage_info[Config::$default_project_id]->info)
-	         	$this->introduction = sprintf(Messages::getString('StartPage.FrontpageInfo'),$this->frontpage_info[Config::$default_project_id]->name,$this->frontpage_info[Config::$default_project_id]->info);
+	         if ((count($this->frontpage_info) > 0) && (! isset($this->frontpage_info[$this->default_project_id]))) {
+	           $values = array_values($this->frontpage_info);
+	           $this->default_project_id=$values[0]->id;
+	         }
+	         if ($this->frontpage_info[$this->default_project_id]->info)
+	         	$this->introduction = sprintf(Messages::getString('StartPage.FrontpageInfo'),$this->frontpage_info[$this->default_project_id]->name,$this->frontpage_info[$this->default_project_id]->info);
          } catch (Exception $exception){ // in this case, render exception as error.
 			 $this->error = $exception;
 		 }
@@ -40,7 +46,7 @@
          } else {
 	     	 $this->renderNote($this->getResultRequestForm(),Messages::getString('StartPage.RequestResults'));
 	     	 $js = 'document.request_results_form.mat_no.focus();';
-	     	 if (! $this->frontpage_info[Config::$default_project_id]->access) {
+	     	 if (! $this->frontpage_info[$this->default_project_id]->access) {
 	     	     $js .= 'document.getElementById("requestbutton").disabled = true;';
 	     	 }
 	     	 
@@ -106,7 +112,7 @@
 	     	$result .= '<select name="project_id" id="project_id_selector" onchange="updateProjectInfo();">';
 	     	foreach ($this->frontpage_info as $id => $project) {
 	     	    $result .= sprintf('<option value="%03d" %s>%s&nbsp;&nbsp;</option>',$id,
-	     	        ($id == Config::$default_project_id ? 'selected="selected"' : ''),
+	     	        ($id == $this->default_project_id ? 'selected="selected"' : ''),
 	     	        		$project->name);
 	     	}	
 	     	$result .= '</select><br/>';

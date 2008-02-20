@@ -89,6 +89,23 @@
      	return true;
      }
      
+     
+     public function removeProject($project_id) {
+     	$project_id = intval($project_id);
+     	mysql_query("DELETE FROM " . $this->TABLES['results'] . 
+     	                   " WHERE project_id = $project_id", $this->db_link);
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	  
+     	mysql_query("DELETE FROM " . $this->TABLES['projects'] . 
+     	                   " WHERE project_id = $project_id".
+     	                   " LIMIT 1", $this->db_link);
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	return true;     
+     }
+     
+     
      /*
       * Returns the project info if only if the access is open
       */
@@ -105,7 +122,8 @@
       */
      public function getFrontpageInfo() {
          $res = mysql_query("SELECT project_id as id, project_name as name, frontpage_info as info, access_open as access" .
-     					   " FROM " . $this->TABLES['projects']);
+     					   " FROM " . $this->TABLES['projects'] .
+                           " ORDER BY name");
      					   
         $result = array();
         while($project = mysql_fetch_object($res)) {
@@ -175,6 +193,15 @@
      	return $result['count'];
      }
      
+     public function getUsedMemberIdCount($project_id) {
+     	$project_id = intval($project_id);
+     	$resource = mysql_query("SELECT COUNT(result) AS count" .
+     			           " FROM " . $this->TABLES['results'] . 
+     	                   " WHERE project_id = $project_id AND result IS NOT NULL",$this->db_link);
+     	$result = mysql_fetch_assoc($resource);
+     	return $result['count'];
+     }
+     
      public function createRkey($project_id,$member_id,$crypt_module,$crypt_data) {
      	$project_id = intval($project_id);
      	$member_id = intval($member_id);
@@ -188,6 +215,36 @@
      	if (mysql_errno($this->db_link) != 0) 
      	  throw new DatabaseException(mysql_error($this->db_link));
      	return true;
+     }
+     
+     public function removeEmptyRkeys($project_id) {
+     	$project_id = intval($project_id);
+     	mysql_query("DELETE FROM " . $this->TABLES['results'] . 
+     	                   " WHERE project_id = $project_id" .
+     	                   "  AND  member_id IS NOT NULL" .
+     	                   "  AND result IS NULL" ,$this->db_link);
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	return true;     
+     }
+     
+     public function removeStoredResults($project_id) {
+     	$project_id = intval($project_id);
+     	mysql_query("DELETE FROM " . $this->TABLES['results'] . 
+     	                   " WHERE project_id = $project_id" .
+     	                   "  AND  member_id IS NULL" ,$this->db_link);
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	return true;     
+     }
+ 
+     public function removeAllResultData($project_id) {
+     	$project_id = intval($project_id);
+     	mysql_query("DELETE FROM " . $this->TABLES['results'] . 
+     	                   " WHERE project_id = $project_id", $this->db_link);
+     	if (mysql_errno($this->db_link) != 0) 
+     	  throw new DatabaseException(mysql_error($this->db_link));
+     	return true;     
      }
      
      public function getResultDataByRKey($rkey) {

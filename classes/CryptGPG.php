@@ -12,6 +12,7 @@
     private $gpg; 
     private $project_id;
     private $member_id;
+    private $keyring_home;
     function __construct($project_id = 0, $member_id = 0) {
         $this->project_id = $project_id;
         $this->member_id = $member_id;
@@ -28,9 +29,22 @@
         if (! file_exists($keyring_home))
         	mkdir($keyring_home);
         	
+        $this->keyring_home = $keyring_home;
         $this->gpg = new gnuPG(Config::$crypt_info['gpg']['program_path'], $keyring_home);
  	}
-     
+ 	
+ 	public function removeKeyring() {
+ 	    $files = array('pubring.bak',
+ 	                   'pubring.gpg',
+ 	                   'random_seed',
+ 	                   'secring.gpg',
+ 	                   'trustdb.gpg');
+ 	    foreach ($files as $file)
+ 	      @unlink($this->keyring_home . "/$file");
+ 	    @rmdir($this->keyring_home); 
+ 	} 
+ 	
+ 	     
     public function decryptResult($crypted_result,$crypt_data,$password = '') {
         $key_id = $crypt_data;
         

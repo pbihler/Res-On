@@ -67,7 +67,7 @@
      }
      
      private function getCreateForm() {
-     	$result = '<div id="createproject"><form method="POST" name="createproject_form" autocomplete="off">';
+     	$result = '<div id="createproject" class="formlayout"><form method="POST" name="createproject_form" autocomplete="off">';
      	
      	$result .= sprintf('<label for="name">%s: </label><input type="text" size="30" name="name" value="%s" /><br />',
      	                     Messages::getString('CreateProjectPage.ProjectName'),htmlspecialchars($_POST['name']));

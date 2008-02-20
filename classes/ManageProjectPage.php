@@ -13,6 +13,7 @@
  	
  	private $error = '';
  	private $SUCCESS_REDIRECT_PAGE = "admin.php";
+ 	private $LOGOUT_REDIRECT_PAGE = "logout.php";
     private $KEY_PDF_PHP = 'key_pdf.php';
  	
  	
@@ -24,6 +25,14 @@
          	if (! $this->error) {
 	 			header("Location: " . $this->SUCCESS_REDIRECT_PAGE);  //Redirect to admin menu, if succeeded
          	} 
+         	
+         } else if (isset($_POST['reset_data'])) {
+         	$this->error = $this->processResetForm();
+         	if (! $this->error) {
+	 			header("Location: " . $this->SUCCESS_REDIRECT_PAGE);  //Redirect to admin menu, if succeeded
+         	} else if ($this->error == "project_deleted") {
+         		header("Location: " . $this->LOGOUT_REDIRECT_PAGE);  //Redirect to admin menu, if succeeded
+         	}
          	
          }
          
@@ -65,21 +74,74 @@
 		 return '';
      }
      
+     function processResetForm() {
+         $action = $_POST['reset_data'];
+         if (! $action)         
+	         return Messages::getString('ManageProjectPage.NoActionSelected');
+	         
+         try {  	         
+	                
+	         $db = Database::getInstance();
+	         $db->startTransaction();
+	         switch ($action) {
+	            case 'purge':
+	              $db->removeEmptyRkeys($this->project->getId());
+	              break;
+	            case 'clean':
+	              $db->removeStoredResults($this->project->getId());
+	              break;
+	            case 'remove':
+	              $db->removeAllResultData($this->project->getId());
+	              $gpg = new CryptGPG($this->project->getId(),0);
+	              $gpg->removeKeyring();
+	              break;
+	            case 'delete_project':
+	              $gpg = new CryptGPG($this->project->getId(),0);
+	              $gpg->removeKeyring();
+	              $db->removeProject($this->project->getId());
+	              $db->commit();
+	              return "project_deleted";
+	              break;
+	         	default:
+	         	  $db->rollback();
+	         	  return Messages::getString('ManageProjectPage.NoActionSelected');
+	         }
+	         $db->commit();
+	         $this->project->refresh();
+	     } catch (Exception $exception){ // in this case, render exception as error.
+	         $db->rollback();
+	         //Rollback project information:
+	         try {
+	           $this->project->refresh();
+	         } catch (Exception $ex) {}
+	         
+			 return $exception;
+		 }
+		 return '';
+     }
+     
      function renderNotes() {
      	if ($this->error)
      	   $this->renderError($this->error,false);
      	   
-     	$this->renderNote($this->getCreateForm(),Messages::getString('ManageProjectPage.ManageProject'));
+     	$this->renderNote($this->getManageForm(),Messages::getString('ManageProjectPage.ManageProject'));
      	$this->writeJavascript('document.createproject_form.name.focus();' .
      			'function pdfpreview() {' .
      			'   document.pdfpreview_form.introduction.value = document.createproject_form.introduction.value;' .
      			'   document.pdfpreview_form.hint.value = document.createproject_form.hint.value;' .
      			'   document.pdfpreview_form.submit();' .
-     			'}');
+     			'}' .
+     	        'function resetData(question,reset_value){
+     	            $("reset_data").value="";
+     	            if (confirm(question)) {
+     	              $("reset_data").value=reset_value;
+     	              $("reset_form").submit();
+     	            }
+     	         }');
      }
      
-     private function getCreateForm() {
-     	$result = '<div id="createproject"><form method="POST" name="createproject_form" autocomplete="off">';
+     private function getManageForm() {
+     	$result = '<div id="manageproject" class="formlayout"><form method="POST" name="createproject_form" autocomplete="off">';
      	
      	$result .= sprintf('<label for="name">%s: </label><input type="text" size="30" name="name" value="%s" /><br />',
      	                     Messages::getString('CreateProjectPage.ProjectName'),htmlspecialchars($this->postValue('name',null,$this->project->getName())));
@@ -123,6 +185,21 @@
      	$this->KEY_PDF_PHP);
      	
      	$result .= '</form>&nbsp;</div>';
+     	
+     	$result .= sprintf('<h3>%s</h3>',Messages::getString('ManageProjectPage.ResetData'));
+     	
+     	$result .= '<div id="resetproject" class="formlayout"><form method="POST" name="reset_form" id="reset_form" autocomplete="off">';
+     	$result .= '<input type="hidden" id="reset_data" name="reset_data" value="" />';
+     	$result .= sprintf('<input type="button" value="%s" onclick="resetData(\'%s\',\'purge\');" />',Messages::getString('ManageProjectPage.PurgeData'),Messages::getString('ManageProjectPage.PurgeDataConfirm'));
+     	$result .= sprintf(' %s<br />',Messages::getString('ManageProjectPage.PurgeDataDescr'));
+     	$result .= sprintf('<input type="button" value="%s" onclick="resetData(\'%s\',\'clean\');" />',Messages::getString('ManageProjectPage.CleanData'),Messages::getString('ManageProjectPage.CleanDataConfirm'));
+     	$result .= sprintf(' %s<br />',Messages::getString('ManageProjectPage.CleanDataDescr'));
+     	$result .= sprintf('<input type="button" value="%s" onclick="resetData(\'%s\',\'remove\');" />',Messages::getString('ManageProjectPage.RemoveData'),Messages::getString('ManageProjectPage.RemoveDataConfirm'));
+     	$result .= sprintf(' %s<br />',Messages::getString('ManageProjectPage.RemoveDataDescr'));
+     	$result .= sprintf('<input type="button" value="%s" onclick="resetData(\'%s\',\'delete_project\');" />',Messages::getString('ManageProjectPage.DeleteProject'),Messages::getString('ManageProjectPage.DeleteProjectConfirm'));
+     	$result .= sprintf(' %s<br />',Messages::getString('ManageProjectPage.DeleteProjectDescr'));
+     	$result .= '</form>&nbsp;</div>';
+     	
          return $result;
      }
      	

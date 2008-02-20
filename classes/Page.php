@@ -125,6 +125,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title><?php echo $this->page_title ?> - Res-On</title>
+<script src="js/prototype.js" type="text/javascript"></script>
 <link href="format/style.css" rel="stylesheet" type="text/css" />
 </head>
 
