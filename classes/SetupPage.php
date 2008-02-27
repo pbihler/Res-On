@@ -403,7 +403,7 @@
 	     	// Check if keyring dir is writeable
 	     	$keyring_home = dirname($this->BASEDIR . '/' . Config::$crypt_info['gpg']['keyring_home']);
 	     	if ( ! $this->isWriteable($keyring_home))
-	     		return sprintf(Messages::getString('SetupPage.KeyringHomeNotWriteable'),$gpg_path);    	
+	     		return sprintf(Messages::getString('SetupPage.KeyringHomeNotWriteable'),$keyring_home);    	
      	}	
      	
      	if (in_array($_POST['crypt']['default'],array_keys(Config::$crypt_info)))
