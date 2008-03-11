@@ -24,7 +24,10 @@
      function __construct() {
          parent::__construct();
          $this->setTitle(Messages::getString('SetupPage.Title'));
-         
+         $this->menu = array(Messages::getString('General.Admin')=>"admin.php") + $this->menu;  
+         $this->menu = array(Messages::getString('General.Home')=>"index.php") + $this->menu;
+         $this->menu = array(Messages::getString('CreateProjectPage.NewProject')=>"create_project.php") + $this->menu;  
+
          //Set absolute basedir
          $this->BASEDIR = dirname(dirname(__FILE__ ));
          

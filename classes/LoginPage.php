@@ -37,13 +37,19 @@
 			 return $exception;
 		 }
 		 
+		 // set project to select
+		 $default_project_id = Config::$default_project_id;
+         if (isset($_POST['project_id'])) {
+             $default_project_id = intval($_POST['project_id']);
+         }
+		 
          $result = '<form action="admin.php" name="login_form" method="post"><div id="loginform">';
          if (count($frontpage_info) > 1) {
 	        $result .= sprintf('<label for="project_id">%s: </label>',Messages::getString('General.Project'));
 	     	$result .= '<select name="project_id" id="project_id_selector">';
 	     	foreach ($frontpage_info as $id => $project) {
 	     	    $result .= sprintf('<option value="%03d" %s>%s&nbsp;&nbsp;</option>',$id,
-	     	        ($id == Config::$default_project_id ? 'selected="selected"' : ''),
+	     	        ($id == $default_project_id ? 'selected="selected"' : ''),
 	     	        		$project->name);
 	     	}	
 	     	$result .= '</select><br/>';

@@ -18,6 +18,9 @@
          $this->setTitle(Messages::getString('StartPage.Title'));
          $this->menu = array(Messages::getString('General.Admin')=>"admin.php") + $this->menu; 
          $this->default_project_id = Config::$default_project_id;
+         if (isset($_POST['project_id'])) {
+             $this->default_project_id = intval($_POST['project_id']);
+         }
          
          try {
 	         $db = Database::getInstance();         
@@ -32,6 +35,12 @@
 			 $this->error = $exception;
 		 }
      }
+ 
+     protected function renderBackNote($text, $title = '') {
+         $this->renderNote(sprintf('%s' .
+             		'<div class="back"><form method="POST"><input type="hidden" name="project_id" value="%d" /><input type="submit" value="%s" /></form></div>',$text,$this->default_project_id,Messages::getString('General.Back')),Messages::getString('General.Error'));              
+     }
+      
      
      function renderNotes() {
      	
@@ -60,11 +69,11 @@
 	     	 }
 	     	 
 	     	 $js .= ' function updateProjectInfo() {' .
-	     	 		'  selector = document.getElementById("project_id_selector");' .
+	     	 		'  selector = $("project_id_selector");' .
 	     	 		'  index = selector.selectedIndex;' .
 	     	 		'  value = selector.options[index].value;' .
-	     	 		'  document.getElementById("requestbutton").disabled = ! projects[value]["access"];' .
-	     	 		'  document.getElementById("introduction").innerHTML = projects[value]["info"] ? projects[value]["info"] : "";' .
+	     	 		'  $("requestbutton").disabled = ! projects[value]["access"];' .
+	     	 		'  $("introduction").innerHTML = projects[value]["info"] ? projects[value]["info"] : "";' .
 	     	 		'}';
 	     	 
 	     	 $this->writeJavascript($js);
@@ -127,6 +136,7 @@
      			'</form>&nbsp;</div>';
          return $result;
      }
+     
      
  }
 ?>
