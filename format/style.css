@@ -204,9 +204,12 @@ table#enter_data tr.warning td {
 	background: #ffffaf;
 }
 #submit_data {
+	margin-top:20px;
+	margin-left:200px;
+}
+#ignore_all{
 	margin-left:300px;
 }
-
 
 div#language_bar {
 	text-align:right;
@@ -262,7 +265,7 @@ input#requestbutton {
 	text-align:center;
 	width:40%;
 	margin:5px auto; 
-	border: 0px; /* Für Firefox und Opera */
+	border: 0px; /* Fï¿½r Firefox und Opera */
  	border-top: solid 1px #808080;
  	border-bottom: transparent;
 }

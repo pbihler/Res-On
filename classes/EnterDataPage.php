@@ -66,7 +66,7 @@
          $this->writeJavascript('function remIgnore($i) {
              if (ignoreElement = document.enter_data_form.elements["ignore["+$i+"]"]) {
                  /* Just allow ignoring, when data did not change */
-                 document.getElementById("remark_"+$i).innerHTML = "";
+                 $("remark_"+$i).innerHTML = "";
              }
          }
          function clear_row($i) {
@@ -76,6 +76,13 @@
              document.enter_data_form.elements["key["+$i+"]"].focus();' .
              		'document.getElementById("set_" + $i).className="";
              document.getElementById("remark_"+$i).innerHTML = "";
+         }
+         function ignoreAll($max_datasets) {
+             for ($i = 0; $i < $max_datasets; ++$i) {
+               if (ignoreElement = document.enter_data_form.elements["ignore["+$i+"]"]) {             
+                 ignoreElement.checked = true;
+               }
+             }
          }');
          	
          $result .= '<form method="POST" name="enter_data_form">';
@@ -110,9 +117,9 @@
                  $result .= $this->remark[$i];
                  $ignore = $this->postValue('ignore',$i,null);
                  if ($isIgnorable) {
-                     $result .= sprintf('<br /><input type="checkbox" name="ignore[%1$d]" value="1" %2$s/>&nbsp;%3$s',$i, $ignore ? 'checked="checked" ' : '',Messages::getString('General.Ignore'));
+                     $result .= sprintf('<br /><input type="checkbox" name="ignore[%1$d]" value="1" %2$s/>&nbsp;%3$s',$i, $ignore ? 'checked="checked" ' : '',Messages::getString('EnterDataPage.Ignore'));
                  }
-                 $result .= sprintf(' <input type="button" value="%s" onclick="clear_row(%2$d)" />',Messages::getString('General.Clear'),$i);
+                 $result .= sprintf(' <input type="button" value="%s" onclick="clear_row(%2$d)" />',Messages::getString('EnterDataPage.ClearInput'),$i);
              }
              $result .= '</td>';
              
@@ -120,6 +127,7 @@
          }
          
          $result .= '</table>';
+         $result .= sprintf('<input type="button" value="%s" id="ignore_all" onclick="ignoreAll(%d)" /><br />',Messages::getString('EnterDataPage.IgnoreAll'), $max_datasets);         
          $result .= sprintf('<input type="submit" value="%s" id="submit_data" />',Messages::getString('EnterDataPage.StoreData'));         
          $result .= '</form>&nbsp;';
          return $result;
@@ -364,7 +372,7 @@
      	foreach(array(';' => ';',',' => ',',"\t" => Messages::getString('General.Tab')) as $sep => $sep_name) {
      		$result .= sprintf('<option value="%s">%s</option>',urlencode($sep),$sep_name);
      	}
-     	$result .= sprintf('</select> <input type="submit" value="%s" /></p>',Messages::getString('EnterDatapage.Upload'));
+     	$result .= sprintf('</select> <input type="submit" value="%s" /></p>',Messages::getString('EnterDataPage.Upload'));
      	$result .= '</form>&nbsp;';
      	return $result;
      }
