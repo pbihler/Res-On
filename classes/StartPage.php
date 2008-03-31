@@ -38,7 +38,7 @@
  
      protected function renderBackNote($text, $title = '') {
          $this->renderNote(sprintf('%s' .
-             		'<div class="back"><form method="POST"><input type="hidden" name="project_id" value="%d" /><input type="submit" value="%s" /></form></div>',$text,$this->default_project_id,Messages::getString('General.Back')),Messages::getString('General.Error'));              
+             		'<div class="back"><form method="POST"><input type="hidden" name="project_id" value="%d" /><input type="submit" value="%s" /></form></div>',$text,$this->default_project_id,Messages::getString('General.Back')),$title);              
      }
       
      
