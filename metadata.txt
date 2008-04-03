@@ -1,4 +1,4 @@
-ResOn 0.6
+ResOn 1.0
 
 Interface to access academic examination results online 
 in a privacy-respecting way.
@@ -39,3 +39,4 @@ Releases:
 0.4 - Dios (2007-12-07)
 0.5 - Embers
 0.6 - Findthee
+1.0 (2008-04-03)
