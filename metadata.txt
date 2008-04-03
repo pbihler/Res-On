@@ -1,9 +1,9 @@
-ResOn 1.0
+ResOn 1.1
 
 Interface to access academic examination results online 
 in a privacy-respecting way.
 
-Developed 2007 by Pascal Bihler, Institute for Informatics III, University of Bonn.
+Developed 2007-2008 by Pascal Bihler, Institute for Informatics III, University of Bonn.
 
 
 -------------------------------------
