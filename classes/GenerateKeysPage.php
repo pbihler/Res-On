@@ -38,7 +38,7 @@
                                 '      }' .
                                 '      crypt_module = document.keygen_form.crypt_module[document.keygen_form.crypt_module.selectedIndex].value;' .
                                 sprintf('      document.keygen_form.run_button.value="%s";',Messages::getString('General.Cancel')) .
-                                sprintf('      document.getElementById("key_output").innerHTML = "<form action=\"' . $this->KEY_PDF_PHP . '\" method=\"POST\" target=\"_blank\"><table id=\"key_output_table\"><tbody id=\"key_output_table_body\"><tr><th class=\"out\">%s</th><th class=\"out\">%s</th></tr></tbody></table><input type=\"submit\" value=\"%s\" /><input type=\"hidden\" name=\"ext\" value=\".pdf\" /></form>&nbsp;";',Messages::getString('General.RKey'),Messages::getString('General.Password'),Messages::getString('GenerateKeysPage.GeneratePdf')) .
+                                sprintf('      document.getElementById("key_output").innerHTML = "<form action=\"' . $this->KEY_PDF_PHP . '\" method=\"POST\" target=\"_blank\"><table id=\"key_output_table\"><tbody id=\"key_output_table_body\"><tr><th class=\"out\">%s</th><th class=\"out\">%s</th></tr></tbody></table><input type=\"submit\" value=\"%s\" id=\"submit_data\" /><input type=\"hidden\" name=\"ext\" value=\".pdf\" /></form>&nbsp;";',Messages::getString('General.RKey'),Messages::getString('General.Password'),Messages::getString('GenerateKeysPage.GeneratePdf')) .
                                 '      generate();' . 
                                 '    } else { '. 
                                 '      stop();' . 
@@ -87,9 +87,9 @@
                                 
          $note = '<form name="keygen_form" onsubmit="clickRunButton(); return false;">' .
          		sprintf('%s: <input type="text" name="key_count" value="1" size="5" />',Messages::getString('GenerateKeysPage.NumberOfKeys')) .
-         		sprintf('&nbsp;<input type="button" name="run_button" value="%s" onclick="clickRunButton();" />',Messages::getString('General.Run')) .
          		'<br />' .
          		sprintf('%s: %s',Messages::getString('GenerateKeysPage.EncryptionModule'),$this->getCryptSelect()) .
+         		sprintf('&nbsp;<input type="button" name="run_button" id="submit_data" value="%s" onclick="clickRunButton();" />',Messages::getString('General.Run')) .
          		'</form>' .
          		sprintf('<iframe src="%s" name="keygen_frame" id="keygen_frame" scrolling="no" frameborder="0">%s</iframe><br />',$this->GEN_KEY_PHP,Messages::getString('GenerateKeysPage.NoKeyGeneration'));         
          $this->renderNote($note,Messages::getString('GenerateKeysPage.RKeyGeneration'));      

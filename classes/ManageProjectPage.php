@@ -158,6 +158,7 @@
      	$result .= sprintf('<label for="info">%s </label><textarea cols="50" rows="5" name="info">%s</textarea><br />',
      	                     Messages::getString('ManageProjectPage.FrontpageInfo'),htmlspecialchars($this->postValue('info',null,$this->project->getInfo())));
      	$access = $this->postValue('access',null,$this->project->getAccess() ? 'yes' : 'no') == 'yes';
+     	$result .= '<hr />';
      	$result .= sprintf('<label>%s: </label><input type="radio" name="access" value="yes" %s > %s</input> <input type="radio" name="access" value="no" %s > %s</input><br />',
      	                     Messages::getString('ManageProjectPage.Access'),
      	                     $access ? ' checked="checked"' : '',
@@ -165,16 +166,21 @@
      	                     $access ? '' : ' checked="checked"',
      	                     Messages::getString('ManageProjectPage.Closed'));
      	$result .= '<hr />';
+     	$result .= sprintf('</p><div id="pdf_config"><h3>%s:</h3><p>',Messages::getString('ManageProjectPage.Handout'));
      	
-     	$result .= sprintf('<label for="introduction">%s </label><textarea cols="50" rows="5" name="introduction">%s</textarea><br />',
+     	
+     	$result .= sprintf('<label for="introduction">%s </label><textarea cols="50" rows="6" name="introduction">%s</textarea><br />',
      	                     Messages::getString('ManageProjectPage.Introduction'),htmlspecialchars($this->postValue('introduction',null,$this->project->getIntroduction())));
-    	$result .= sprintf('<label for="hint">%s </label><textarea cols="50" rows="5" name="hint">%s</textarea>',
+    	
+     	$result .= sprintf('<span class="handout_center">(%s)</span>',Messages::getString('ManageProjectPage.HandoutCenter'));
+     	$result .= sprintf('<label for="hint">%s </label><textarea cols="50" rows="6" name="hint">%s</textarea>',
      	                     Messages::getString('ManageProjectPage.Hint'),htmlspecialchars($this->postValue('hint',null,$this->project->getHint())));
      	$result .= sprintf('<input type="button" value="%s" onclick="pdfpreview();" id="pdfpreviewbutton" /><br />',Messages::getString('ManageProjectPage.showPdfPreview'));
-    	                                       
+    	                       
+     	$result .= '</div>';                
     	$result .= '<hr />';
      	                     
-     	$result .= sprintf('<input type="submit" value="%s"  /> <input type="reset" value="%s"  />',Messages::getString('ManageProjectPage.ChangeProjectInformation'),Messages::getString('ManageProjectPage.ResetValues'));
+     	$result .= sprintf('<input type="submit" value="%s" id="submit_data" /><br /> <input type="reset" value="%s"  id="reset_data" />',Messages::getString('ManageProjectPage.ChangeProjectInformation'),Messages::getString('ManageProjectPage.ResetValues'));
      	
      	$result .= sprintf('</form><form name="pdfpreview_form" action="%s" method="POST" target="_blank">' .
      			'<input type="hidden" name="key[]" value="123-456789" />' .
@@ -184,7 +190,7 @@
      			'<input type="hidden" name="ext" value=".pdf" /></form>',
      	$this->KEY_PDF_PHP);
      	
-     	$result .= '</form>&nbsp;</div>';
+     	$result .= '</form>&nbsp;</p></div><p>';
      	
      	$result .= sprintf('<h3>%s</h3>',Messages::getString('ManageProjectPage.ResetData'));
      	

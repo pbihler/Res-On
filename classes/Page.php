@@ -192,8 +192,11 @@
          return '<div class="error">' . $message . "</div><br />\n";
      }
      
-     protected function renderNote($text, $title = '') {
+     protected function renderNote($text, $title = '', $anchor = '') {
          ?>
+         <?php if ($anchor) { ?>
+            <a name="<?php echo $anchor; ?>"></a>
+          <?php } ?>
          <?php if ($title) { ?>
             <h3><?php echo $title; ?></h3>
           <?php } ?>

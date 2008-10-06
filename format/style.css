@@ -136,6 +136,8 @@ div#loginform {
 		text-align:left;
 }
 div#loginform label {
+  text-align:right;
+  padding-right:5px;
   float:left;
   clear:both;
   display:block;
@@ -204,8 +206,20 @@ table#enter_data tr.warning td {
 	background: #ffffaf;
 }
 #submit_data {
-	margin-top:20px;
-	margin-left:200px;
+	margin-top:5px;
+	margin-bottom:5px;
+	margin-left:300px;
+	background-color:#BDFF7B;
+	padding:10px 30px;
+}
+#reset_data {
+	margin-left:300px;
+}
+#upload_data {
+	margin-top:5px;
+	margin-left:300px;
+	background-color:#BDFF7B;
+	padding:10px 30px;
 }
 #ignore_all{
 	margin-left:300px;
@@ -242,6 +256,8 @@ div#unilogo a {
 }
 
 .startformlabel {
+  text-align:right;
+  padding-right:5px;
   float:left;
   clear:both;
   display:block;
@@ -256,15 +272,19 @@ input#requestbutton {
  }
  
 .formlayout label {
+  text-align:right;
+  padding-right:5px;
   float:left;
   clear:both;
   display:block;
   width:150px;
 }
 .formlayout hr {
+	clear:both;
+	display:block;
 	text-align:center;
 	width:40%;
-	margin:5px auto; 
+	margin:10px auto; 
 	border: 0px; /* F�r Firefox und Opera */
  	border-top: solid 1px #808080;
  	border-bottom: transparent;
@@ -275,11 +295,22 @@ textarea {
 }
 
 input#pdfpreviewbutton {
-   margin: -7em 0px 7em 20px;
+   margin: -2em 0px 2em 20px;
+   position:absolute;
  }
  
+#pdf_config {
+border: 1px #202020 solid;
+padding:5px;
+}
+	
 select {
 	min-width:100px;
 }
  
+ .handout_center {
+	display:block;
+	text-align:center;
+	padding:5px;
+ }
 

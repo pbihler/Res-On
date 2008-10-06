@@ -34,7 +34,7 @@
         if ($this->processError) {
             $this->renderNote($this->processError,Messages::getString('General.OperationFailed'));
         }
-        	
+     
         	
         if (isset($_POST['key']))
         	$this->processInput();
@@ -52,12 +52,16 @@
         } elseif ($this->storeResult == 0) {
             $this->renderNote(sprintf(Messages::getString('EnterDataPage.ErrorMessage'),$this->storeResult),Messages::getString('General.OperationFailed'));
         }
-        $this->renderNote($this->generateDataForm(),Messages::getString('EnterDataPage.EnterDataHere'));
-        $this->writeJavascript('document.enter_data_form.elements[0].focus();');
         
         if (count($this->csvDataSets) == 0) {
-         	$this->renderNote($this->generateCsvImportForm(),Messages::getString('EnterDataPage.ImportFromCsv'));
+         	$this->renderNote(Messages::getString('EnterDataPage.ImportDataChoice'),Messages::getString('EnterDataPage.ImportDataChoiceTitle'));
+         	
+         	$this->renderNote($this->generateCsvImportForm(),Messages::getString('EnterDataPage.ImportFromCsv'),"csv");
         }
+        	
+        $this->renderNote($this->generateDataForm(),Messages::getString('EnterDataPage.EnterDataHere'),"direct");
+        $this->writeJavascript('document.enter_data_form.elements[0].focus();');
+        
      
      }
      
@@ -84,22 +88,40 @@
                }
              }
          }');
-         	
-         $result .= '<form method="POST" name="enter_data_form">';
          
-         $result .= '<table id="enter_data">';
-         
-         $result .=	sprintf('<tr>' .
-         		'<th>%s</th><th>%s</th><th>%s</th><th>%s</th>' .
-         		'</tr>',Messages::getString('General.RKey'),Messages::getString('General.MatNo'),Messages::getString('General.Result'),Messages::getString('General.Remark'));
-         
-         
+
+         //prepare Data
          $max_datasets = max(Config::$numberOfDataSetsToEnter,count($_POST['key']),count($_POST['mat_no']),count($_POST['data']));
          
          if (count($this->csvDataSets) > 0) {
          	$result .= $this->CsvDataSelector();
             $max_datasets = count($this->csvDataSets);
          }
+         
+         
+         //Find out whether there are errors/warnings
+         $errorCount = 0;
+         $warningCount = 0;
+         for ($i = 0; $i < $max_datasets; $i++) {
+             $hasRemark = isset($this->remark[$i]) && $this->remark[$i];
+             $isIgnorable = isset($_POST['ignore'][$i]);
+             if ($hasRemark) {
+             	if ($isIgnorable)
+             	  $warningCount++;
+             	else
+             	  $errorCount++;
+             }
+         }
+         
+         //print out the form
+         $result .= '<form method="POST" name="enter_data_form">';
+         
+         $result .= '<table id="enter_data">';
+         
+         $result .=	sprintf('<tr>' .
+         		'<th>%s</th><th>%s</th><th>%s</th><th>%s</th>' .
+         		'</tr>',Messages::getString('General.RKey'),Messages::getString('General.MatNo'),Messages::getString('General.Result'),($warningCount || $errorCount ? Messages::getString('General.Remark'): ''));
+         
          
          
          
@@ -127,7 +149,8 @@
          }
          
          $result .= '</table>';
-         $result .= sprintf('<input type="button" value="%s" id="ignore_all" onclick="ignoreAll(%d)" /><br />',Messages::getString('EnterDataPage.IgnoreAll'), $max_datasets);         
+         if ($warningCount)
+         	$result .= sprintf('<input type="button" value="%s" id="ignore_all" onclick="ignoreAll(%d)" /><br />',Messages::getString('EnterDataPage.IgnoreAll'), $max_datasets);         
          $result .= sprintf('<input type="submit" value="%s" id="submit_data" />',Messages::getString('EnterDataPage.StoreData'));         
          $result .= '</form>&nbsp;';
          return $result;
@@ -366,13 +389,13 @@
       */
      private function generateCsvImportForm() {
      	
-        $result = '<form method="POST" name="import_csv_form" enctype="multipart/form-data">';
-     	$result .= sprintf('<p>%s: <input name="csvfile" type="file" /></p>',Messages::getString('EnterDataPage.SelectFile'));
-     	$result .= sprintf('<p>%s: <select name="separator">',Messages::getString('EnterDataPage.Separator'));
+        $result = '<form method="POST" name="import_csv_form" enctype="multipart/form-data" class="formlayout">';
+     	$result .= sprintf('<p><label for="csvfile">%s:</label> <input name="csvfile" type="file" /></p>',Messages::getString('EnterDataPage.SelectFile'));
+     	$result .= sprintf('<p><label for="separator">%s:</label> <select name="separator">',Messages::getString('EnterDataPage.Separator'));
      	foreach(array(';' => ';',',' => ',',"\t" => Messages::getString('General.Tab')) as $sep => $sep_name) {
      		$result .= sprintf('<option value="%s">%s</option>',urlencode($sep),$sep_name);
      	}
-     	$result .= sprintf('</select> <input type="submit" value="%s" /></p>',Messages::getString('EnterDataPage.Upload'));
+     	$result .= sprintf('</select><br /><input type="submit" value="%s" id="upload_data" /></p>',Messages::getString('EnterDataPage.Upload'));
      	$result .= '</form>&nbsp;';
      	return $result;
      }
