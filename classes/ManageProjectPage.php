@@ -180,7 +180,7 @@
      	$result .= '</div>';                
     	$result .= '<hr />';
      	                     
-     	$result .= sprintf('<input type="submit" value="%s" id="submit_data" /><br /> <input type="reset" value="%s"  id="reset_data" />',Messages::getString('ManageProjectPage.ChangeProjectInformation'),Messages::getString('ManageProjectPage.ResetValues'));
+     	$result .= sprintf('<input type="submit" value="%s" id="submit_data" /><br /> <input type="reset" value="%s"  id="reset_data_button" />',Messages::getString('ManageProjectPage.ChangeProjectInformation'),Messages::getString('ManageProjectPage.ResetValues'));
      	
      	$result .= sprintf('</form><form name="pdfpreview_form" action="%s" method="POST" target="_blank">' .
      			'<input type="hidden" name="key[]" value="123-456789" />' .

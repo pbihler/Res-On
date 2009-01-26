@@ -212,7 +212,7 @@ table#enter_data tr.warning td {
 	background-color:#BDFF7B;
 	padding:10px 30px;
 }
-#reset_data {
+#reset_data_button {
 	margin-left:300px;
 }
 #upload_data {

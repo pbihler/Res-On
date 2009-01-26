@@ -232,18 +232,6 @@
          }
      }
  
- 	/**
-      * Checks, whether a master-passwort transmitted via POST ist correct or not (null, if not transmitted)
-      */
-     protected function CheckPostMasterPassword() {
-     	if (! isset($_POST['master_pwd'])) 
-     	  return null;
-     	if (Config::$master_salt)
-     		return crypt($_POST['master_pwd'],Config::$master_salt) == Config::$master_password;
-     	else
-     		return $_POST['master_pwd'] == Config::$master_password;
-     	  
-     } 
  }
  
 ?>

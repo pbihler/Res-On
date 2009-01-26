@@ -104,6 +104,8 @@
       public static $master_salt = '';
       public static $master_password = ''; // overwrite in conf.local.php! 
       
+      public static $allow_project_login_with_master_password = false; 
+      
       public static $default_project_info = array(
       	'info' => '',
       	'access' => true,

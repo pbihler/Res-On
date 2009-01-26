@@ -63,12 +63,20 @@
         // and create new session_id to prevent session fixation:
         self::destroySession();
         $session = self::getInstance();
-       
-	 	try {
-	 		$session->project = new Project($project_id,$password);
-	 	} catch (PasswordException $e) {
+        if ($password) { // some password has to be entered
+        
+            //Allow login via Master Password
+            if (Config::$allow_project_login_with_master_password && General::CheckPostMasterPassword($password))
+            	$password='';
+            	
+		 	try {
+		 		$session->project = new Project($project_id,$password);
+		 	} catch (PasswordException $e) {
+		 		$session->project = null;
+		 	}
+        } else {
 	 		$session->project = null;
-	 	}
+        }
 	 	return $session;
      }
      

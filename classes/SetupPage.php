@@ -33,7 +33,7 @@
          
          // Check, if transmitted master password is correct
          if (Config::$master_password) {
-	         $check = $this->CheckPostMasterPassword();
+	         $check = General::CheckPostMasterPassword();
 	         if (check !== null && $check === false) 
 	         	$this->error = Messages::getString('CreateProjectPage.MasterPasswordWrong');
 	         $this->master_password_correct = $check;
@@ -41,7 +41,7 @@
          
          
          // process transmitted form
-         if ((! Config::$master_password || $this->CheckPostMasterPassword()) && isset($_POST['setup'])) {
+         if ((! Config::$master_password || General::CheckPostMasterPassword()) && isset($_POST['setup'])) {
          	$this->error = $this->processForm();
          	if (! $this->error) {
 	 			header("Location: " . $this->SUCCESS_REDIRECT_PAGE);  //Redirect to create_project, if succeeded
@@ -219,6 +219,7 @@
 	     	$this->local_conf[] = '// Config::$default_project_info[\'hint\']=\'\'; // The bottom of the PDF handout. You can use these variables: %RKEY%, %PASSWORD%, %URL%, %PROJECT%';
 			$this->local_conf[] = '// Config::$disclaimer[\'title\']=\'Important remark\';';
 	     	$this->local_conf[] = '// Config::$disclaimer[\'text\']=\'Add important remarks here, which are shown on the bottom of every page\';';
+	     	$this->local_conf[] = '// Config::$allow_project_login_with_master_password = true;  // Uncomment to allow project login via master password';
 			
 	     	// Generate Hash salt:
 	     	$this->local_conf[] = sprintf('Config::$crypt_info[\'hash\'][\'salt\'] = \'%s\';',$this->generateSalt());

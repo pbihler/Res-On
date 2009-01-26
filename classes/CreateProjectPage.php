@@ -38,7 +38,7 @@
      		return Messages::getString('CreateProjectPage.PasswordNotEmpty');
      	if ($_POST['pwd'] != $_POST['pwd2'])
      		return Messages::getString('CreateProjectPage.PasswordsNotEqual');
-     	if (! $this->CheckPostMasterPassword())
+     	if (! General::CheckPostMasterPassword())
      		return Messages::getString('CreateProjectPage.MasterPasswordWrong');  
      		
      		
