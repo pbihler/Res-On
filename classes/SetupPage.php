@@ -449,6 +449,11 @@
       	if (CRYPT_BLOWFISH) {
           	$result = '$2$';
           	$n = 13;
+          	// On some systems, CRYPT_BLOWFISH seems to be buggy, so we test this and switch to MD5 as fallback:
+          	if (strlen(crypt('test','$2$4567890123456')) < 10) {
+      			$result = '$1$';
+      			$n = 9;
+          	}
       	} else if (CRYPT_MD5) {
       		$result = '$1$';
       		$n = 9;
