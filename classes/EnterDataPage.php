@@ -35,9 +35,11 @@
             $this->renderNote($this->processError,Messages::getString('General.OperationFailed'));
         }
      
-        	
-        if (isset($_POST['key']))
-        	$this->processInput();
+
+        $error_while_processing_input = false;
+        if (isset($_POST['key'])) {
+        	$error_while_processing_input = ! $this->processInput();
+        }
         	
         if ($this->storeResult > 0) {
             $this->renderNote(sprintf(Messages::getString('EnterDataPage.SuccessMessage'),$this->storeResult),Messages::getString('General.OperationSuccessful'));
@@ -53,7 +55,7 @@
             $this->renderNote(sprintf(Messages::getString('EnterDataPage.ErrorMessage'),$this->storeResult),Messages::getString('General.OperationFailed'));
         }
         
-        if (count($this->csvDataSets) == 0) {
+        if ((count($this->csvDataSets) == 0) && (! $error_while_processing_input)) {
          	$this->renderNote(Messages::getString('EnterDataPage.ImportDataChoice'),Messages::getString('EnterDataPage.ImportDataChoiceTitle'));
          	
          	$this->renderNote($this->generateCsvImportForm(),Messages::getString('EnterDataPage.ImportFromCsv'),"csv");
@@ -312,11 +314,14 @@
          if ($nonempty_elements == 0) {
           	$this->db->rollback();
          	$this->storeResult = -1;
+         	return true;
          } elseif ($commitData) {
          	$this->db->commit();
+         	return true;
          } else {
           	$this->db->rollback();
             $this->storeResult = 0;
+         	return false;
          }
      }
      
