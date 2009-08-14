@@ -91,13 +91,13 @@
          
 
          //prepare Data
+         foreach(array('key','mat_no','data') as $s)
+         	if (! isset($_POST[$s]))
+         		$_POST[$s] = array();
+         	
          $max_datasets = max(Config::$numberOfDataSetsToEnter,count($_POST['key']),count($_POST['mat_no']),count($_POST['data']));
          
-         if (count($this->csvDataSets) > 0) {
-         	$result .= $this->CsvDataSelector();
-            $max_datasets = count($this->csvDataSets);
-         }
-         
+       
          
          //Find out whether there are errors/warnings
          $errorCount = 0;
@@ -121,6 +121,11 @@
          $result .=	sprintf('<tr>' .
          		'<th>%s</th><th>%s</th><th>%s</th><th>%s</th>' .
          		'</tr>',Messages::getString('General.RKey'),Messages::getString('General.MatNo'),Messages::getString('General.Result'),($warningCount || $errorCount ? Messages::getString('General.Remark'): ''));
+         
+         if (count($this->csvDataSets) > 0) {
+         	$result .= $this->CsvDataSelector();
+            $max_datasets = count($this->csvDataSets);
+         }
          
          
          
@@ -316,24 +321,51 @@
       * Processes the uploaded CSV-file
       */
      private function processCsvImport() {
-     	if ($handle = fopen ($_FILES['csvfile']['tmp_name'],'r')) {
-     		$separator = urldecode($_POST['separator']);
-     		if (! $separator) $separator = ',';
-     		$c = 0;
-			while (($data = fgetcsv ($handle, 1024,$separator)) !== FALSE ) {
-				if (! $data || count($data) == 0 || ! $data[0])
-				    continue;
+     
+     	$uploaded_file_name = $_FILES['csvfile']['tmp_name'];
+     	
+     	try {
+	        /** try to read excel file **/
+	     	try {
+	     		$objReader = PHPExcel_IOFactory::createReaderForFile($uploaded_file_name);
+	     	} catch (Exception $e) { // if format could not be determined, we assume CSV
+	     		$objReader = PHPExcel_IOFactory::createReader('CSV');
+	     	}
+			
+			if (method_exists($objReader,"setDelimiter")) { // its a csv file
+	     		$separator = urldecode($_POST['separator']);
+	     		if (! $separator) $separator = ',';
+				$objReader->setDelimiter($separator);
+			} else { // its an excel file
+	     		$objReader->setReadDataOnly(true);
+			}
+	     
+			$objPHPExcel = $objReader->load($uploaded_file_name);
+			$objWorksheet = $objPHPExcel->getActiveSheet();
+	
+			foreach ($objWorksheet->getRowIterator() as $row) {
+				
+	  			$cellIterator = $row->getCellIterator();
+	  			$cellIterator->setIterateOnlyExistingCells(false); 
+	  			
+				$data = array();
+	  			foreach ($cellIterator as $cell) {
+	  			    $data[] = $cell->getValue();
+	  			}
 				$this->numberOfCsvCols = max($this->numberOfCsvCols, count($data));
 				$this->csvDataSets[] = $data;
+
 			}
-			fclose ($handle);
+     	
 			if (count($this->csvDataSets) == 0) {
 				$this->processError = Messages::getString('No data found in input file.');
 			}
-     	} else {
-     		$this->processError = Messages::getString('EnterDataPage.CouldNotReadInputFile') + ' ' + $_FILES['csvfile']['error'];
-     	}
-     	@unlink($_FILES['csvfile']['tmp_name']);
+			
+     	} catch (Exception $e) { // some error occured
+     		$this->processError = Messages::getString('EnterDataPage.CouldNotReadInputFile') . ' ' . $_FILES['csvfile']['error'] . " (" . $e->getMessage() . ")";
+	    }
+	    
+     	@unlink($uploaded_file_name);
      }
      
      /**
@@ -357,13 +389,16 @@
      			'            document.getElementById(select_boxes[i]).options[j].text = has_header ? csv_data[0][j-1] : "%s " + j;' .
      			'        }' .
      			'    }' .
-     			'    document.getElementById("set_0").style.visibility = has_header ? "hidden" : "visible";' .
+     			'    document.getElementById("set_0").style.display = has_header ? "none" : "";' .
      			'}',$this->numberOfCsvCols,Messages::getString('EnterDataPage.Column'));
      	$js .= sprintf(' function fill_col(selector,id) {' .
      			'    var col = document.getElementById(selector).selectedIndex - 1;' .
      			'    if (col < 0) return;' .
      			'    for (j=0;j<%d;j++) {' .
-     			'      document.getElementById(id + "[" + j + "]").value = csv_data[j][col];' .
+     	        '      var value = csv_data[j][col];' . 
+     			'      if ((id=="key") && (value.substring(0,4)=="' . sprintf("%03d", $this->project->getId()) . '-"))' .
+     			'         value = value.substring(4);' .
+     			'      document.getElementById(id + "[" + j + "]").value = value;' .
      			'    }' .
      			'}',count($this->csvDataSets));
      	$this->writeJavascript($js);
@@ -377,7 +412,7 @@
 	     	}
 	     	$result .= '</select></td>';
      	}
-     	$result .= sprintf('<td><input name="csv_has_header" type="checkbox" id="csv_has_header" onclick="toggle_headers()">&nbsp;<label for="csv_has_header">%s</label></input></td>',Messages::getString('EnterDatapage.InputFileContainsHeader'));
+     	$result .= sprintf('<td>&nbsp;<input name="csv_has_header" type="checkbox" id="csv_has_header" onclick="toggle_headers()">&nbsp;<label for="csv_has_header">%s</label></input></td>',Messages::getString('EnterDatapage.InputFileContainsHeader'));
          		
         $result .= '</tr>';
      	return $result;
@@ -395,7 +430,7 @@
      	foreach(array(';' => ';',',' => ',',"\t" => Messages::getString('General.Tab')) as $sep => $sep_name) {
      		$result .= sprintf('<option value="%s">%s</option>',urlencode($sep),$sep_name);
      	}
-     	$result .= sprintf('</select><br /><input type="submit" value="%s" id="upload_data" /></p>',Messages::getString('EnterDataPage.Upload'));
+     	$result .= sprintf('</select>&nbsp;%s<br /><input type="submit" value="%s" id="upload_data" /></p>',Messages::getString('EnterDataPage.SeparatorHint'),Messages::getString('EnterDataPage.Upload'));
      	$result .= '</form>&nbsp;';
      	return $result;
      }

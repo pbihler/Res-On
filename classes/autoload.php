@@ -14,6 +14,7 @@
    						    'FPDF'       => "includes/fpdf/fpdf.php",
    						    'gnuPG'		 => "includes/gnuPG_class.inc",
    						    'Properties' => "includes/Properties.php",
+   							'PHPExcel_IOFactory' => "includes/PHPExcel/IOFactory.php",
    						    'DatabaseException' => "classes/Database.php"
    );
       
@@ -24,6 +25,9 @@
        	$class_name .= '.php';
   
   // Load classfile:
-   require_once  $class_name;
+   if (file_exists("classes/$class_name") || file_exists($class_name))
+  	 require_once  $class_name;
 }
+
+  
 ?>
