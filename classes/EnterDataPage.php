@@ -112,6 +112,7 @@
              	  $errorCount++;
              }
          }
+         $result = ""; // init result
          
          //print out the form
          $result .= '<form method="POST" name="enter_data_form">';
@@ -202,7 +203,13 @@
             }
             
             try {
-				$rkey = new RKey(sprintf('%03d-%s',$this->project->getId(),$keys[$i]));                
+                // normalize rkey
+                $keystr = strtoupper($keys[$i]); 
+                if (substr($keystr,0,4) == sprintf('%03d-',$this->project->getId()))
+                  $keystr = substr($keystr,4);
+                $keys[$i] = $keystr;
+                
+				$rkey = new RKey(sprintf('%03d-%s',$this->project->getId(),$keystr));                
             } catch (Exception $e) {
                 $this->remark[$i] = Messages::getString('EnterDataPage.RKeyInvalid');
                 $commitData = false; //Fatal Error
@@ -298,6 +305,8 @@
             }
             
          }
+         
+         $_POST['key'] = $keys; // update with normalized keys
          
          //Finish transaction
          if ($nonempty_elements == 0) {

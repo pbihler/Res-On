@@ -15,6 +15,7 @@
     private $DICT = array('0','1','2','3','4','5','6','7','8','9','X');
     
  	function __construct ($project_id,$member_id = null) {
+ 	    $project_id = strtoupper($project_id);
  		if (! $member_id) {
  			// The String in $project_id is parsed
  			if (preg_match('/^([0-9]+)-([0-9]+)([0-9X])$/i',$project_id,$elements)) {
@@ -25,6 +26,7 @@
  			} else 
  			    throw new RKeyException(sprintf('String "%s" is not a valid RKey.',$project_id));
  		} else {
+ 		    $member_id = strtoupper($member_id);
  			$this->project_id = $project_id;
  			$this->member_id = $member_id;
  		}
