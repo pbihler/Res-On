@@ -361,9 +361,10 @@
 	  			foreach ($cellIterator as $cell) {
 	  			    $data[] = $cell->getValue();
 	  			}
-				$this->numberOfCsvCols = max($this->numberOfCsvCols, count($data));
-				$this->csvDataSets[] = $data;
-
+	  			if (! $this->is_multiArrayEmpty($data)) {
+					$this->numberOfCsvCols = max($this->numberOfCsvCols, count($data));
+					$this->csvDataSets[] = $data;
+	  			}
 			}
      	
 			if (count($this->csvDataSets) == 0) {
@@ -443,5 +444,23 @@
      	$result .= '</form>&nbsp;';
      	return $result;
      }
+       	 
+     	 
+     /**
+      * Checks if all elements of an array are empty
+      */
+     private function is_multiArrayEmpty($multiarray) {
+	    if(is_array($multiarray) and !empty($multiarray)){
+	        $tmp = array_shift($multiarray);
+	            if(!$this->is_multiArrayEmpty($multiarray) or !$this->is_multiArrayEmpty($tmp)){
+	                return false;
+	            }
+	            return true;
+	    }
+	    if(empty($multiarray)){
+	        return true;
+	    }
+	    return false;
+	} 
  }
 ?>
