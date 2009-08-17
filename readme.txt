@@ -24,7 +24,7 @@ Res-On
 System Requirements
 -------------------
 
-  * (Apache) Webserver, equipped with PHP Version 5.0.0 or later
+  * (Apache) Webserver, equipped with PHP Version 5.0.0 or later, php5-zip installed
   * MySQL database, Version 4.0.11 or later
   * GnuPG (GPG), Version 1.4.7 or later (optional, for strong result encryption)
   

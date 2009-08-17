@@ -34,7 +34,7 @@
          // Check, if transmitted master password is correct
          if (Config::$master_password) {
 	         $check = General::CheckPostMasterPassword();
-	         if (check !== null && $check === false) 
+	         if ($check !== null && $check === false) 
 	         	$this->error = Messages::getString('CreateProjectPage.MasterPasswordWrong');
 	         $this->master_password_correct = $check;
          } 

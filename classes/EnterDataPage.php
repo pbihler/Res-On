@@ -117,7 +117,7 @@
          $result = ""; // init result
          
          //print out the form
-         $result .= '<form method="POST" name="enter_data_form">';
+         $result .= '<form method="POST" name="enter_data_form" autocomplete="off">';
          
          $result .= '<table id="enter_data">';
          
