@@ -65,12 +65,18 @@
 		if (isset($_POST['key']) || isset($_POST['pwd'])) {
 		    $keys = $_POST['key'];
 		    $pwds = $_POST['pwd'];
+		    $minimal = $_POST['minimal'];
 		    if (count($keys) > 0 && count($keys) == count($pwds)) {
-		        for ($i = 0; $i < count($keys); $i++) {
-		 			$introduction = $this->replaceVariables($this->introduction,$keys[$i],$pwds[$i]);
-		 			$hint = $this->replaceVariables($this->hint,$keys[$i],$pwds[$i]);
-		            $this->AddCredentialPage($pdf,$keys[$i],$pwds[$i],$introduction,$hint);
-		        }		    
+		        if ($minimal) {
+		        	$this->WriteMinimalHandout($pdf,$keys,$pwds);
+		        } else {
+			        for ($i = 0; $i < count($keys); $i++) {
+			 			$introduction = $this->replaceVariables($this->introduction,$keys[$i],$pwds[$i]);
+			 			$hint = $this->replaceVariables($this->hint,$keys[$i],$pwds[$i]);
+			            $this->AddCredentialPage($pdf,$keys[$i],$pwds[$i],$introduction,$hint);
+			           
+			        }	
+		        }	    
 		        return;
 		    }
 		}
@@ -102,6 +108,113 @@
 		$pdf->WriteHTML(0,14,$hint); 		
 		$pdf->Ln();
  	    
+ 	}
+ 	
+ 	private function WriteMinimalHandout($pdf,$keys,$pwds) {
+ 	
+ 	   $count_x = 3;
+ 	   $count_y = 10;
+ 	   $w = $pdf->getPageWidth() / $count_x;
+ 	   $h = $pdf->getPageHeight() / $count_y;
+		
+ 	    
+ 	    $pdf->SetFillColor(255,255,255);
+ 	    
+ 	    // Calculate title properties
+ 	    $max_title_width = $w*0.8;
+ 	    $title_font_height = 10;
+		$pdf->SetFont('Arial','B',$title_font_height);
+		$title = " " . $this->project->getName() . " "; 
+		while($pdf->GetStringWidth($title) > $max_title_width) {
+		    $pdf->SetFont('Arial','B',--$title_font_height);
+		}
+		$title_width = $pdf->GetStringWidth($title);
+ 	    
+		$shift = 0;
+		
+		while (true) {
+			$cell_count = count($keys)-$shift;
+			
+			if ($cell_count <= 0)
+			  break;
+			
+			$key_count = 0;
+			
+			// Print R-Keys and Passwords:
+	 	    $this->addUrlPage($pdf,$this->url);
+	 	    
+	 	    $font_height = 10;
+			$pdf->SetFont('Courier','B',$font_height);
+			$i = 0;
+	 	    for ($y = 0; $y < $count_y; $y++) {
+		 	    for($x = 0;$x < $count_x;$x++) {
+		 	        $i++;
+		 	        if ($i > $cell_count)
+		 	          break;
+		 	          
+		 	        
+		 	        $line1 = Messages::getString('General.RKey') . ": " . $keys[$key_count];
+		 	        $line2 = Messages::getString('General.Password') . ": " . $pwds[$key_count];
+	
+		 	        $width_line1 = $pdf->GetStringWidth($line1)+2;
+		 	        $width_line2 = $pdf->GetStringWidth($line2)+2;
+		 	        $width = max($width_line1,$width_line2);
+		 	    	
+		 	        $pdf->SetXY($x*$w+($w-$width)/2,$y*$h+($h- $font_height-3)/2);
+		 	    	$pdf->Cell($width_line1, $font_height+2,"$line1",0,0,'C',true); 
+		 	    	
+		 	        $pdf->SetXY($x*$w+($w-$width)/2,$y*$h+($h- $font_height-3)/2 + $font_height+2);
+		 	    	$pdf->Cell($width_line2, $font_height+2,"$line2",0,0,'C',true); 
+		 	    	
+		 	    	
+		 	        $key_count++;
+		 	    }
+	 	    }
+			
+			
+			//paint backside
+			
+	 	    $this->addUrlPage($pdf,$this->url);
+	 	    
+			$pdf->SetFont('Arial','B',$title_font_height);
+			$i = 0;
+	 	    for ($y = 0; $y < $count_y; $y++) {
+		 	    for($x = $count_x-1; $x >=0 ;$x--) {
+		 	        $i++;
+		 	        if ($i > $cell_count)
+		 	          break;
+		 	          
+		 	    	$pdf->SetXY($x*$w+($w-$title_width )/2,$y*$h+($h- $title_font_height-2)/2);
+		 	    	$pdf->Cell($title_width , $title_font_height+2,$title,0,0,'C',true); 
+		 	    }
+	 	    }
+	 	    $shift += $count_x*$count_y;
+		}
+		
+ 	}
+ 	
+ 	private function addUrlPage($pdf,$url) {
+ 		$url_string = "";
+ 	    for ($i = 0; $i < strlen($url); $i++) {
+ 	         $url_string .= substr($url,$i,1) . " ";
+ 	    }
+ 	    $url_string .= "  ";
+ 	    
+ 	    $pdf->AddPage();
+		$pdf->SetMargins(0,0);
+		$pdf->SetAutoPageBreak(false);
+		
+		
+		$pdf->SetFont('Arial','',5);
+		$pdf->SetTextColor(20,20,20);
+		
+		$pdf->SetXY(0,0);
+		$pageHeight = $pdf->GetPageHeight();
+		while ($pdf->GetY() < $pageHeight)
+			$pdf->Write(6,$url_string);
+			
+		$pdf->SetXY(0,0); 
+
  	}
  	
  	protected function renderError($pdf,$error) {

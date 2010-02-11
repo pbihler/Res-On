@@ -952,6 +952,16 @@ function Ln($h='')
 		$this->y+=$h;
 }
 
+function GetPageHeight()
+{
+	return $this->fh;
+}
+
+function GetPageWidth()
+{
+	return $this->fw;
+}
+
 function GetX()
 {
 	//Get x position

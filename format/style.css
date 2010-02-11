@@ -205,6 +205,10 @@ table#enter_data tr.error td {
 table#enter_data tr.warning td {
 	background: #ffffaf;
 }
+#minimal_heck {
+	margin-top:5px;
+	margin-left:100px;
+}
 #submit_data {
 	margin-top:5px;
 	margin-bottom:5px;
