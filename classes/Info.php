@@ -13,7 +13,7 @@
      public static $version = '1.4';
      
      public static function footer() {
-         return '<a href="http://www.res-on.org">Res-On v' . Info::$version . ' - &copy;&nbsp;2007-2009 by res-on.org</a>';
+         return '<a href="http://www.res-on.org">Res-On v' . Info::$version . ' - &copy;&nbsp;2007-2010 by res-on.org</a>';
      }
      
      
