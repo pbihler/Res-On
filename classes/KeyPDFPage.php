@@ -131,6 +131,7 @@
 		$title_width = $pdf->GetStringWidth($title);
  	    
 		$shift = 0;
+		$key_count = 0;
 		
 		while (true) {
 			$cell_count = count($keys)-$shift;
@@ -138,7 +139,6 @@
 			if ($cell_count <= 0)
 			  break;
 			
-			$key_count = 0;
 			
 			// Print R-Keys and Passwords:
 	 	    $this->addUrlPage($pdf,$this->url);
